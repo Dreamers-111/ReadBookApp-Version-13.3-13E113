@@ -54,6 +54,7 @@ struct HomeView: View {
                     welcomeText(username: $username)
                         .padding(.horizontal)
                         .padding(.vertical)
+                        .padding(.top)
                     
                     searchBar(searchText: $searchText)
                         .padding(.horizontal)
@@ -87,10 +88,13 @@ struct HomeView: View {
             
             bottomNavBar()
             
-            MenuTop(size: self.$size)
+            MenuTop(size: $size)
+                .background(Color.white.opacity(0.5))
+                .cornerRadius(8)
                 .frame(maxHeight: .infinity, alignment: .top)
                 .padding(.horizontal)
-            
+                
+                
             HStack {
                 MenuView(size: $size)
                     .cornerRadius(20)
@@ -129,7 +133,8 @@ struct MenuTop: View {
                 Image("people")
                     .resizable()
                     .frame(width: 40, height: 40)
-            })
+            }).padding(.bottom)
+            
         }
     }
 }
