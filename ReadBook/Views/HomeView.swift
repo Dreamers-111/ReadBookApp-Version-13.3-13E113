@@ -7,45 +7,6 @@
 
 import SwiftUI
 
-struct HomeView: View {
-  
-    @State var showMenu = false
-    var body: some View {
-        
-        let drag = DragGesture()
-            .onChanged {
-                if $0.translation.width > 50 {
-                    withAnimation{
-                        self.showMenu = true
-                    }
-                }
-            }
-            .onEnded {
-                if $0.translation.width < 50 {
-                    self.showMenu = false
-                }
-            }
-        
-        return GeometryReader { geometry in
-            ZStack(alignment: .leading){
-                MainView(showMenu: $showMenu)
-                    .frame(width: geometry.size.width)
-                    .disabled(self.showMenu ? true : false)
-                    .opacity(self.showMenu ? 0.5 : 1.0)
-                    .onTapGesture {
-                        self.showMenu = false
-                    }
-                if self.showMenu {
-                    MenuView()
-                        .frame(width: geometry.size.width/1.2)
-                        .transition(.slide)
-                }
-            }
-            .gesture(drag)
-        }
-    }
-}
-
 class myBook{
     var title:String
     var author:String
@@ -60,12 +21,14 @@ class myBook{
     }
 }
 
-struct MainView: View {
+struct HomeView: View {
     @StateObject private var vm = HomeViewModel()
-    @Binding var showMenu: Bool
     @State private var username: String = "Dreamers"
+    
     @State private var searchText = ""
-
+    
+    let categories = ["Tiểu thuyết","Khoa học","Lãng mạn","Tâm lý","Giáo dục"]
+    
     let books1 = [myBook(title: "20 giờ đầu tiên", author: "Josh Kaufman", imageName: "nhasachmienphi-20-gio-dau-tien"),
                   myBook(title: "Một ngày cho đời", author: "Christin Antoni", imageName: "nhasachmienphi-mot-ngay-cho-mot-doi"),
                   myBook(title: "Vượn trần trụi", author: "Desmond Morris", imageName: "nhasachmienphi-vuon-tran-trui"),
@@ -74,18 +37,23 @@ struct MainView: View {
                   myBook(title: "Sói thảo nguyên", author: "Hẻmann hesse", imageName: "nhasachmienphi-soi-thao-nguyen"),
                   myBook(title: "20 giờ đầu tiên", author: "Josh Kaufman", imageName: "nhasachmienphi-20-gio-dau-tien"),
                   myBook(title: "Juliet", author: "Anne Fortier", imageName: "nhasachmienphi-juliet")]
-
+    
+    @State private var selectedCategoryIndex = 0
+    
+    @State private var selectedBottomNavBarItemIndex = 0
+    
+    @State var size = UIScreen.main.bounds.width / 1.2
+    
     var body: some View {
+        
         ZStack {
             
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading,spacing:0) {
-
-                    sideMenu_profileButton(showMenu: $showMenu)
-                        .padding(.horizontal)
+            ScrollView(showsIndicators: true) {
+                VStack(alignment: .leading, spacing:0) {
                     
                     welcomeText(username: $username)
-                        .padding()
+                        .padding(.horizontal)
+                        .padding(.vertical)
                     
                     searchBar(searchText: $searchText)
                         .padding(.horizontal)
@@ -98,7 +66,6 @@ struct MainView: View {
                     
                     listBook(books: books1)
                         .padding(.vertical).padding(.leading)
-                    
                     
                     Text("Sách mới")
                         .font(.system(size: 24))
@@ -114,20 +81,58 @@ struct MainView: View {
                         .padding(.bottom)
                         .padding(.bottom)
                 }
-                .navigationBarTitle("")
-                .navigationBarHidden(true)
             }
+            .padding(.top)
+            .padding(.top)
             
             bottomNavBar()
+            
+            MenuTop(size: self.$size)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .padding(.horizontal)
+            
+            HStack {
+                MenuView(size: $size)
+                    .cornerRadius(20)
+                    .padding(.leading, -size)
+                    .offset(x: -size)
+                    .edgesIgnoringSafeArea(.all)
+                Spacer()
+            }
+            .animation(.spring())
+
         }
         .onAppear {
             self.vm.fectchBookCategories()
             
         }
+        .navigationBarHidden(true)
 
     }
 }
 
+struct MenuTop: View {
+    @Binding var size: CGFloat
+    var body: some View {
+        HStack {
+            Button(action: {
+                self.size = 5
+            }, label: {
+                Image("align-left")
+                    .resizable()
+                    .frame(width: 40, height: 40)
+            })
+            
+            Spacer()
+            
+            Button(action: {}, label: {
+                Image("people")
+                    .resizable()
+                    .frame(width: 40, height: 40)
+            })
+        }
+    }
+}
 
 
 struct HomeView_Previews: PreviewProvider {
@@ -142,31 +147,6 @@ extension UIApplication {
             .filter{$0.isKeyWindow}
             .first?
             .endEditing(force)
-    }
-}
-
-struct sideMenu_profileButton: View {
-    @Binding var showMenu: Bool
-    var body: some View {
-        HStack {
-            Button {
-                withAnimation{
-                    self.showMenu = true
-                }
-            } label: {
-                Image("align-left")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                
-            }
-            Spacer()
-            Button{
-            } label: {
-                Image("people")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-            }
-        }
     }
 }
 
@@ -233,20 +213,38 @@ struct searchBar: View {
 }
 
 struct theLoaiBtn_bookMarkBtn: View {
+    @State var showView = false
+    @State private var action: Int? = 0
     var body: some View {
         HStack(spacing:0) {
+            NavigationLink(tag: 1, selection: $action) {
+                CategoryView()
+            } label: {
+                 Button {
+                     self.action = 1
+                 } label: {
+                     button(image:Image("photo-1507842217343-583bb7270b66"),
+                            colorOverlay: Color(red: 0.6784313917160034, green: 0.8117647171020508, blue: 0.9176470637321472).opacity(0.85),
+                            title: "THỂ LOẠI",
+                            subtitle: "CHUYÊN MỤC")
+                     .padding(.trailing)
+                 }
+            }
+//
+            NavigationLink(tag: 2, selection: $action) {
+                BookmarkView()
+            } label: {
+                 Button {
+                     self.action = 2
+                 } label: {
+                     button(image:Image("photo-1617635837145-cf409451c41e"),
+                            colorOverlay: Color(red: 0.5843137502670288, green: 0.7803921699523926, blue: 0.7372549176216125).opacity(0.85),
+                            title: "BOOKMARK",
+                            subtitle: "TRUYỆN CỦA BẠN")
+                     .padding(.leading)
+                 }
+            }
             
-            button(image:Image("photo-1507842217343-583bb7270b66"),
-                   colorOverlay: Color(red: 0.6784313917160034, green: 0.8117647171020508, blue: 0.9176470637321472).opacity(0.85),
-                   title: "THỂ LOẠI",
-                   subtitle: "CHUYÊN MỤC")
-            .padding(.trailing)
-            
-            button(image:Image("photo-1617635837145-cf409451c41e"),
-                   colorOverlay: Color(red: 0.5843137502670288, green: 0.7803921699523926, blue: 0.7372549176216125).opacity(0.85),
-                   title: "BOOKMARK",
-                   subtitle: "TRUYỆN CỦA BẠN")
-            .padding(.leading)
         }
     }
 }
@@ -257,29 +255,25 @@ struct button: View {
     let title:String
     let subtitle:String
     var body: some View {
-        Button {
-        } label: {
-            ZStack {
-                image
-                    .resizable()
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(colorOverlay)
-                    )
-                ( Text(title)
-                    .font(.system(size: 22))
-                    .fontWeight(.heavy)
-                  + Text("\n# \(subtitle)")
-                    .font(.system(size: 14))
-                    .fontWeight(.semibold)
+        ZStack {
+            image
+                .resizable()
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(colorOverlay)
                 )
-                .lineSpacing(5)
-                .foregroundColor(.white)
-            }
-            .frame(maxWidth: .infinity, maxHeight: 90)
-            
+            ( Text(title)
+                .font(.system(size: 22))
+                .fontWeight(.heavy)
+              + Text("\n# \(subtitle)")
+                .font(.system(size: 14))
+                .fontWeight(.semibold)
+            )
+            .lineSpacing(5)
+            .foregroundColor(.white)
         }
+        .frame(maxWidth: .infinity, maxHeight: 90)
     }
 }
 
@@ -400,5 +394,194 @@ struct bottomNavBar: View {
         .edgesIgnoringSafeArea(.bottom)
     }
 }
+
+// MENU
+
+struct MenuView: View {
+    @Binding var size : CGFloat
+    var body: some View {
+        VStack(alignment: .leading) {
+                ZStack{
+                    HStack {
+                        Spacer()
+                        
+                        Button(action: {
+                            self.size =  UIScreen.main.bounds.width / 1.2
+                        }, label: {
+                            Image("close")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .padding()
+                                .zIndex(12)
+                        }).foregroundColor(.white)
+                    }
+                        .zIndex(1)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                    
+                    ZStack (alignment: .bottomLeading) {
+                        Rectangle()
+                            .fill(Color(#colorLiteral(red: 0.12941177189350128, green: 0.7215686440467834, blue: 0.572549045085907, alpha: 1)))
+                        .frame(height: 160)
+                        
+                        Image_TitleMenu()
+                    }
+                }
+                .zIndex(1)
+                
+                VStack(alignment: .leading) {
+                    Spacer()
+                    ButtonMenuAbove()
+                        .padding(.horizontal)
+        
+                    Rectangle()
+                        .frame(height: 0.5)
+                        .padding(.horizontal,30)
+                        
+                    ButtonMenuBelow()
+                        .padding(.horizontal)
+                
+                    Spacer()
+                    Spacer()
+                }
+                .background(Color(.white))
+                .offset(x: 0 , y: 0)
+                .foregroundColor(Color(#colorLiteral(red: 0.62,green: 0.62,blue: 0.62,alpha: 1)))
+
+            }
+            .frame(width: UIScreen.main.bounds.width / 1.2)
+    }
+}
+
+struct Image_TitleMenu: View {
+    var body: some View {
+        VStack{
+            HStack(spacing: 10) {
+                Image(uiImage: #imageLiteral(resourceName: "people"))
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .zIndex(1)
+                Text("DREAMERS")
+                        .font(.system(size: 22)).bold()
+                        .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
+            }.offset(x: 20, y: 25)
+        }
+    }
+}
+
+struct ButtonMenu: View {
+    let image:Image
+    let name:String
+    var body: some View {
+        HStack{
+            image
+                .resizable()
+                .frame(width: 25, height: 25)
+            Text(name)
+                .font(.system(size: 20))
+                .fontWeight(.medium)
+                .tracking(1)
+        }.padding()
+    }
+}
+
+struct ButtonMenuAbove: View {
+    @State private var action: Int? = 0
+    var body: some View {
+        VStack(alignment: .leading) {
+            NavigationLink(tag: 1, selection: $action) {
+                HomeView()
+            } label: {
+                 Button {
+                     self.action = 1
+                     print("aloo")
+                 } label: {
+                     ButtonMenu(image:Image("home"), name: "Trang chủ")
+                 }
+            }
+            
+            NavigationLink(tag: 2, selection: $action) {
+                CategoryView()
+            } label: {
+                 Button {
+                     self.action = 2
+                 } label: {
+                     ButtonMenu(image:Image("options-lines"), name: "Thể loại")
+                 }
+            }
+            
+            NavigationLink(tag: 3, selection: $action) {
+                BookmarkView()
+            } label: {
+                 Button {
+                     self.action = 3
+                 } label: {
+                     ButtonMenu(image:Image("bookmark"), name: "Bookmark")
+                 }
+            }
+            
+            NavigationLink(tag: 4, selection: $action) {
+                SettingView()
+            } label: {
+                 Button {
+                     self.action = 4
+                 } label: {
+                     ButtonMenu(image:Image("settings"), name: "Cài đặt")
+                 }
+            }
+        }
+    }
+}
+
+struct ButtonMenuBelow: View {
+    @State private var action: Int? = 0
+    var body: some View{
+        VStack(alignment: .leading) {
+            NavigationLink(tag: 1, selection: $action) {
+                HomeView()
+            } label: {
+                 Button {
+                     self.action = 1
+                     print("aloo")
+                 } label: {
+                     ButtonMenu(image:Image("browser"), name: "Truy cập website")
+                 }
+            }
+            
+            NavigationLink(tag: 2, selection: $action) {
+                CategoryView()
+            } label: {
+                 Button {
+                     self.action = 2
+                 } label: {
+                     ButtonMenu(image:Image("star"), name: "Đánh giá 5 sao")
+                 }
+            }
+            
+            NavigationLink(tag: 3, selection: $action) {
+                HomeView()
+            } label: {
+                 Button {
+                     self.action = 3
+                 } label: {
+                     ButtonMenu(image:Image("email"), name: "Gửi phản hồi")
+                 }
+            }
+            
+            NavigationLink(tag: 4, selection: $action) {
+                HomeView()
+            } label: {
+                 Button {
+                     self.action = 4
+                 } label: {
+                     ButtonMenu(image:Image("settings"), name: "Chính sách bảo mật")
+                 }
+            }
+        }
+    }
+}
+
+
+
 
 

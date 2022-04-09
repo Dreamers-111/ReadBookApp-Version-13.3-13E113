@@ -16,28 +16,27 @@ class myBook1 {
     var author:String
     var about_author:String
     var description:String
-    var isBookmark:Bool
     var chapter: [myChapter]
     private var imageName:String
     var image:Image{
         Image(imageName)
     }
-    init(title:String,author:String,imageName:String, about_author:String,description:String, isBookmark:Bool,chapter: [myChapter]){
+    init(title:String,author:String,imageName:String, about_author:String,description:String,chapter: [myChapter]){
         self.title = title
         self.author = author
         self.imageName = imageName
         self.about_author = about_author
         self.description = description
-        self.isBookmark = isBookmark
         self.chapter = chapter
     }
 }
 
     
-struct BookPriviewView: View {
+struct BookPreviewView: View {
     
+    @State private var selectedBottomNavBarItemIndex = 0
     
-    let book = myBook1(title: "Juliet", author: "Anne Fortier", imageName: "nhasachmienphi-juliet",about_author: "Anne Fortier (sinh năm 1971) là nhà văn người Đan Mạch gốc Canada, sống ở Mỹ và Canada từ năm 2002.",description: "Với ai từng đam mê những hình ảnh và ngôn từ tuyệt đẹp, hay nuối tiếc với cái kết chưa có hậu về mối tình kinh điển Romeo và Juliet của Shakespeare, thì khi đọc cuốn tiểu thuyết Juliet này, độc giả sẽ không chỉ được hòa mình vào không khí ngất ngây của mối thiên tình sử ấy, mà còn được nghẹt thở cùng những cuộc phiêu lưu, rượt đuổi mạo hiểm, và hơn hết, là được thỏa lòng với hồi kết có hậu: đám cưới hạnh phúc tất yếu giữa chàng Romeo lịch lãm, can trường, và nàng Juliet thông minh, mạnh mẽ.", isBookmark: false, chapter:
+    let book = myBook1(title: "Juliet", author: "Anne Fortier", imageName: "nhasachmienphi-juliet",about_author: "Anne Fortier (sinh năm 1971) là nhà văn người Đan Mạch gốc Canada, sống ở Mỹ và Canada từ năm 2002.",description: "Với ai từng đam mê những hình ảnh và ngôn từ tuyệt đẹp, hay nuối tiếc với cái kết chưa có hậu về mối tình kinh điển Romeo và Juliet của Shakespeare, thì khi đọc cuốn tiểu thuyết Juliet này, độc giả sẽ không chỉ được hòa mình vào không khí ngất ngây của mối thiên tình sử ấy, mà còn được nghẹt thở cùng những cuộc phiêu lưu, rượt đuổi mạo hiểm, và hơn hết, là được thỏa lòng với hồi kết có hậu: đám cưới hạnh phúc tất yếu giữa chàng Romeo lịch lãm, can trường, và nàng Juliet thông minh, mạnh mẽ.", chapter:
         [myChapter(
             name: "Lời mở đầu",
             content: "Cảm ơn các bạn"),
@@ -57,7 +56,6 @@ struct BookPriviewView: View {
 
     var body: some View {
         
-        NavigationView {
             ZStack {
                 
                 ScrollView(showsIndicators: false) {
@@ -107,7 +105,6 @@ struct BookPriviewView: View {
             }
         }
     }
-}
 
 struct back_ButtonView: View {
     var body: some View {
@@ -231,8 +228,6 @@ struct bookChapter_ForeachView: View {
     }
 }
 
-
-
 struct readAndBookmark_ButtonView: View {
     var book: myBook1
     @State private var action: Int? = 0
@@ -262,10 +257,8 @@ struct readAndBookmark_ButtonView: View {
             Spacer()
                 
             Button{
-                
-                book.isBookmark = !book.isBookmark
-                print("Add to bookmark")
-                print(book.isBookmark)
+
+                print("Bookmarrk")
                 
             } label: {
                 
@@ -275,7 +268,7 @@ struct readAndBookmark_ButtonView: View {
                 
             }
             .frame(width: 168.0, height: 57.0)
-            .background(book.isBookmark ? Color(#colorLiteral(red: 0.78, green: 0.56, blue: 0.56, alpha: 1)) : Color(#colorLiteral(red: 0.83, green: 0.33, blue: 0.33, alpha: 1)))
+            .background(true ? Color(#colorLiteral(red: 0.78, green: 0.56, blue: 0.56, alpha: 1)) : Color(#colorLiteral(red: 0.83, green: 0.33, blue: 0.33, alpha: 1)))
             .cornerRadius(10)
             .animation(.default)
         }
@@ -285,7 +278,7 @@ struct readAndBookmark_ButtonView: View {
 
 struct BookPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        BookPriviewView()
+        BookPreviewView()
     }
 }
 

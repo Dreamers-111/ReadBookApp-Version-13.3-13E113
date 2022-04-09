@@ -13,42 +13,94 @@ struct BookChapterView: View {
     var title:String
     var name:String
     var content:String
-    
+    @State private var selectedBottomNavBarItemIndex = 0
+    @State var textSize:CGFloat = 16.0
+    @State var isHide = true
     var body: some View {
         ZStack {
-            ScrollView(showsIndicators: false){
-                    
-                    VStack(alignment: .leading){
+            ZStack {
+                ScrollView(showsIndicators: false){
                         
-                        contentChap_TextView(content: content)
-                            .padding(.horizontal)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                        
-                        Spacer()
-                        
+                        VStack(alignment: .leading){
+                            
+                            contentChap_TextView(content: self.content, textSize: self.$textSize)
+                                .padding(.horizontal)
+                                .padding(.bottom)
+                                .padding(.bottom)
+                            
+                            Spacer()
+                            
+                    }
                 }
+                .navigationBarBackButtonHidden(true)
+                .navigationBarItems(leading:
+                                        CustomBackButtonView(
+                                            action:{
+                                                presentationMode.wrappedValue.dismiss()
+                                        }),
+                                    trailing:
+                                        CustomThreeDotsButtonView(
+                                            action:{
+                                                self.isHide = !self.isHide
+                                            })
+                                   )
+                .navigationBarTitle(title + " - " + name, displayMode: .inline)
+                
+                bottomNavBar()
             }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading:
-                                    CustomBackButtonView(
-                                        action:{
-                                            presentationMode.wrappedValue.dismiss()
-                                    }),
-                                trailing:
-                                    CustomThreeDotsButtonView(
-                                        action:{
-                                            presentationMode.wrappedValue.dismiss()
-                                    })
-                               )
-            .navigationBarTitle(title + " - " + name, displayMode: .inline)
             
-            bottomNavBar()
+            changeFont_View(textSize: self.$textSize, isHide: self.$isHide)
+                .opacity(isHide ? 0 : 1)
+            
         }
-
     }
-
 }
+
+struct changeFont_View: View {
+
+    @State private var isEditing = false
+    @Binding var textSize:CGFloat
+    @Binding var isHide:Bool
+    var body: some View {
+        VStack {
+            
+            CustomExitButtonView(action:{
+                self.isHide = true
+            })
+            .foregroundColor(.black)
+            .frame(maxWidth: .infinity, alignment: .topTrailing)
+            
+            Slider(
+                value: $textSize,
+                in: 5...30,
+                step: 1
+            ) {
+                Text("Font size")
+            } minimumValueLabel: {
+                Text("5")
+            } maximumValueLabel: {
+                Text("30")
+            } onEditingChanged: { editing in
+                isEditing = editing
+            }
+            .padding(.horizontal)
+            
+            Text("Kích cỡ chữ: \(Int(textSize))")
+                .foregroundColor(isEditing ? .red : .blue)
+                .padding(.bottom)
+                .padding(.bottom)
+                .padding(.bottom)
+                .padding(.horizontal)
+            
+        }
+        .background(Color.white)
+        .shadow(color: Color.black.opacity(0.3), radius: 3)
+        .frame(maxHeight:.infinity,alignment: .bottom)
+        .edgesIgnoringSafeArea(.bottom)
+        
+    }
+}
+
 
 struct CustomBackButtonView: View {
     let action: () -> Void
@@ -78,9 +130,23 @@ struct CustomThreeDotsButtonView: View {
     }
 }
 
+struct CustomExitButtonView: View {
+    let action: () -> Void
+    var body: some View {
+        Button(action: action,
+            label: {
+                Image("close")
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                    .padding()
+        })
+        .foregroundColor(.black)
+    }
+}
 
 struct contentChap_TextView: View {
     var content:String
+    @Binding var textSize:CGFloat
     var body: some View {
 
         VStack(alignment: .leading){
@@ -88,12 +154,11 @@ struct contentChap_TextView: View {
             {
                 text in
                     Text(text)
-                    .font(.system(size: 16))
+                    .font(.system(size: textSize))
                     .foregroundColor(Color(#colorLiteral(red: 0.62, green: 0.62, blue: 0.62, alpha: 1)))
                 
             }
-            .padding(.bottom)
-        }
+            .padding(.bottom)        }
     
     }
     
@@ -108,3 +173,4 @@ struct BookChapterView_Previews: PreviewProvider {
         BookChapterView(title: "", name: "", content: "")
     }
 }
+

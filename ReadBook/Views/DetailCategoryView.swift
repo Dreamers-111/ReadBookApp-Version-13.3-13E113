@@ -1,13 +1,13 @@
 //
-//  tieuthuyetBtnView.swift
+//  DetailCategoryView.swift
 //  ReadBookApp
 //
-//  Created by Phan Tam Nhu on 26/03/2022.
+//  Created by Phan Tam Nhu on 31/03/2022.
 //
 
 import SwiftUI
 
-class TieuThuyetbook {
+class detailCategoryBook {
     private var imageName: String
     var image: Image{
         Image(imageName)
@@ -26,19 +26,16 @@ class TieuThuyetbook {
     }
 }
 
-struct tieuthuyetBtnView: View {
+struct DetailCategoryView: View {
     
     @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
     
-    let book = [TieuThuyetbook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Tiểu thuyết"),
-                TieuThuyetbook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Tiểu thuyết"),
-                TieuThuyetbook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Tiểu thuyết")
-                ]
-    
+    let book: [detailCategoryBook]
+    let category: String
     var body: some View {
         ScrollView(.vertical, showsIndicators: false){
             
-            tieuthuyetList(books: book)
+            detailList(books: book)
                 .padding()
                 .navigationBarBackButtonHidden(true)
                 .navigationBarItems(leading: CustomBackButtonView (
@@ -46,12 +43,13 @@ struct tieuthuyetBtnView: View {
                                             presentationMode.wrappedValue.dismiss()
                                         })
                                     )
-                .navigationBarTitle("Tiểu thuyết", displayMode: .inline)
+                .navigationBarTitle("\(category)", displayMode: .inline)
         }
     }
 }
 
-struct item: View {
+struct itemList :  View {
+
     let image: Image
     let title: String
     let author: String
@@ -85,13 +83,13 @@ struct item: View {
     }
 }
 
-struct tieuthuyetList: View {
-    let books: [TieuThuyetbook]
+struct detailList : View {
+    let books: [detailCategoryBook]
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading) {
                 ForEach(0..<books.count) { index in
-                    item(image: books[index].image,
+                    itemList(image: books[index].image,
                          title: books[index].title,
                          author: books[index].author,
                          totalChapter: books[index].totalChapter,
@@ -102,8 +100,8 @@ struct tieuthuyetList: View {
     }
 }
 
-struct tieuthuyetBtnView_Previews: PreviewProvider {
+struct DetailCategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        tieuthuyetBtnView()
+        DetailCategoryView(book: [], category: "")
     }
 }

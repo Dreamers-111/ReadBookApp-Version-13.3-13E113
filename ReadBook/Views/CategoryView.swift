@@ -9,45 +9,48 @@ import SwiftUI
 
 struct CategoryView: View {
     
+    @State private var selectedBottomNavBarItemIndex = 1
+    
+    @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
     
     var body: some View {
-        
-        NavigationView {
-            VStack(spacing: 15) {
-                
-                VStack(alignment: .leading, spacing: 15) {
-                    Text("Thể loại")
-                        .bold()
-                        .font(.system(size: 25))
-                    
-                    Text("CÁC THỂ LOẠI SÁCH HAY NHẤT HIỆN NAY")
-                        .fontWeight(.bold)
-                        .font(.system(size: 16.5))
-                        .foregroundColor(Color(#colorLiteral(red: 0.13, green: 0.72, blue: 0.57, alpha: 1)))
-                }
+    
+        VStack(spacing: 15) {
+            
+            Spacer()
+            
+            Text("CÁC THỂ LOẠI SÁCH HAY NHẤT HIỆN NAY")
+                .fontWeight(.bold)
+                .font(.system(size: 16.5))
+                .foregroundColor(Color(#colorLiteral(red: 0.13, green: 0.72, blue: 0.57, alpha: 1)))
 
-                VStack(spacing: 15) {
-                    HStack {
-                        khoahocBtn()
-                        tamlyBtn()
-                    }
-                    HStack {
-                        vanhocBtn()
-                        langmanBtn()
-                    }
-                    HStack {
-                        tieuthuyetBtn()
-                        nuocngoaiBtn()
-                    }
+            VStack(spacing: 15) {
+                HStack {
+                    khoahocBtn()
+                    tamlyBtn()
                 }
-                
-                Spacer()
-                
-                bottomNavBar()
-                
+                HStack {
+                    vanhocBtn()
+                    langmanBtn()
+                }
+                HStack {
+                    tieuthuyetBtn()
+                    nuocngoaiBtn()
+                }
             }
-            .navigationBarHidden(true)
+            
+            Spacer()
+            
+            bottomNavBar()
+            
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: CustomBackButtonView (
+                                action:{
+                                    presentationMode.wrappedValue.dismiss()
+                                })
+                            )
+        .navigationBarTitle("THỂ LOẠI", displayMode: .inline)
     }
 }
 
@@ -85,10 +88,15 @@ struct ButtonCategory: View {
 }
 
 struct khoahocBtn: View {
+    
+    let book = [detailCategoryBook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Khoa học"),
+                detailCategoryBook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Khoa học"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Khoa học")
+                ]
     @State private var action: Int? = 0
     var body: some View {
         NavigationLink(tag: 1, selection: $action) {
-            khoahocBtnView()
+            DetailCategoryView(book: book, category: "Khoa học")
         }
         label: {
             Button {
@@ -107,10 +115,15 @@ struct khoahocBtn: View {
 }
 
 struct tamlyBtn: View {
+    
+    let book = [detailCategoryBook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Tâm lý"),
+                detailCategoryBook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Tâm lý"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Tâm lý")
+                ]
     @State private var action: Int? = 0
     var body: some View {
         NavigationLink(tag: 1, selection: $action) {
-            tamlyBtnView()
+            DetailCategoryView(book: book, category: "Tâm lý")
         } label: {
              Button {
                  self.action = 1
@@ -128,10 +141,16 @@ struct tamlyBtn: View {
 }
 
 struct vanhocBtn: View {
+    
+    let book = [detailCategoryBook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Văn học"),
+                detailCategoryBook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Văn học"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Văn học")
+                ]
+    
     @State private var action: Int? = 0
     var body: some View {
         NavigationLink(tag: 1, selection: $action) {
-            vanhocBtnView()
+            DetailCategoryView(book: book, category: "Văn học")
         } label: {
              Button {
                  self.action = 1
@@ -149,10 +168,16 @@ struct vanhocBtn: View {
 }
 
 struct langmanBtn: View {
+    
+    let book = [detailCategoryBook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Lãng mạn"),
+                detailCategoryBook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Lãng mạn"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Lãng mạn")
+                ]
+    
     @State private var action: Int? = 0
     var body: some View {
         NavigationLink(tag: 1, selection: $action) {
-            langmanBtnView()
+            DetailCategoryView(book: book, category: "Lãng mạn")
         } label: {
             Button {
                 self.action = 1
@@ -170,10 +195,15 @@ struct langmanBtn: View {
 }
 
 struct tieuthuyetBtn: View {
+    
+    let book = [detailCategoryBook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Tiểu thuyết"),
+                detailCategoryBook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Tiểu thuyết"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Tiểu thuyết")
+                ]
     @State private var action: Int? = 0
     var body: some View {
         NavigationLink(tag: 1, selection: $action) {
-            tieuthuyetBtnView()
+            DetailCategoryView(book: book, category: "Tiểu thuyết")
         } label: {
             Button {
                 self.action = 1
@@ -191,10 +221,17 @@ struct tieuthuyetBtn: View {
 }
 
 struct nuocngoaiBtn: View {
+    
+    let book = [detailCategoryBook(imageName: "nhasachmienphi-juliet", title: "Juliet", author: "Anne Fortier",totalChapter: 12, genre: "Tiểu thuyết"),
+                detailCategoryBook(imageName: "nhasachmienphi-mot-ngay-cho-mot-doi", title: "Một ngày cho đời", author: "Christin Antoni", totalChapter: 15, genre: "Nước ngoài"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Nước ngoài"),
+                detailCategoryBook(imageName: "nhasachmienphi-bay-nam-sau", title: "Bảy năm sáu", author: "Guillaume Musso", totalChapter: 10, genre: "Nước ngoài")
+                ]
+    
     @State private var action: Int? = 0
     var body: some View {
         NavigationLink(tag: 1, selection: $action) {
-            nuocngoaiBtnView()
+            DetailCategoryView(book: book, category: "Nước ngoài")
         } label: {
             Button {
                 self.action = 1
