@@ -36,7 +36,6 @@ class myBook1 {
     
 struct BookPriviewView: View {
     
-    @State private var selectedBottomNavBarItemIndex = 0
     
     let book = myBook1(title: "Juliet", author: "Anne Fortier", imageName: "nhasachmienphi-juliet",about_author: "Anne Fortier (sinh năm 1971) là nhà văn người Đan Mạch gốc Canada, sống ở Mỹ và Canada từ năm 2002.",description: "Với ai từng đam mê những hình ảnh và ngôn từ tuyệt đẹp, hay nuối tiếc với cái kết chưa có hậu về mối tình kinh điển Romeo và Juliet của Shakespeare, thì khi đọc cuốn tiểu thuyết Juliet này, độc giả sẽ không chỉ được hòa mình vào không khí ngất ngây của mối thiên tình sử ấy, mà còn được nghẹt thở cùng những cuộc phiêu lưu, rượt đuổi mạo hiểm, và hơn hết, là được thỏa lòng với hồi kết có hậu: đám cưới hạnh phúc tất yếu giữa chàng Romeo lịch lãm, can trường, và nàng Juliet thông minh, mạnh mẽ.", isBookmark: false, chapter:
         [myChapter(
@@ -100,7 +99,7 @@ struct BookPriviewView: View {
                             .padding(.bottom)
                             .padding()
 
-                        bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
+                        bottomNavBar()
                             
                     }
                 }

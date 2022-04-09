@@ -13,7 +13,6 @@ struct BookChapterView: View {
     var title:String
     var name:String
     var content:String
-    @State private var selectedBottomNavBarItemIndex = 0
     
     var body: some View {
         ZStack {
@@ -44,7 +43,7 @@ struct BookChapterView: View {
                                )
             .navigationBarTitle(title + " - " + name, displayMode: .inline)
             
-            bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
+            bottomNavBar()
         }
 
     }

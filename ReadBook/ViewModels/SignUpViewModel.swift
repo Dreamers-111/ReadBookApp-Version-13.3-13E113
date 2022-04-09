@@ -7,11 +7,11 @@
 
 import Foundation
 import Combine
-import Firebase
+import FirebaseFirestore
 
 class SignUpViewModel: ObservableObject{
     
-    let db = Firestore.firestore()
+    private var db = Firestore.firestore()
     
     @Published var ho = ""
     @Published var ten = ""

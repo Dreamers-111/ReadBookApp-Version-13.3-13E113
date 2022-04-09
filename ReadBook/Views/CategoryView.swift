@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CategoryView: View {
     
-    @State private var selectedBottomNavBarItemIndex = 1
     
     var body: some View {
         
@@ -44,7 +43,7 @@ struct CategoryView: View {
                 
                 Spacer()
                 
-                bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
+                bottomNavBar()
                 
             }
             .navigationBarHidden(true)
