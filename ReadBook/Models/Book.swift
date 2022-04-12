@@ -20,6 +20,7 @@ class Book:Identifiable{
         Image(imageName)
     }
 
+
     var aboutAuthor:String!
     var description:String!
     var chapters:[BookChapter] = []
@@ -32,6 +33,5 @@ class Book:Identifiable{
         self.imageName = imageName
         self.totalChapters = totalChapters
     }
-
 }
 

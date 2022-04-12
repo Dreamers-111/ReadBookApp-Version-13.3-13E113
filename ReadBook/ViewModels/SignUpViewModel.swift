@@ -11,7 +11,7 @@ import FirebaseFirestore
 
 class SignUpViewModel: ObservableObject{
     
-    private var db = Firestore.firestore()
+    private let db = Firestore.firestore()
     
     @Published var ho = ""
     @Published var ten = ""
@@ -155,7 +155,8 @@ class SignUpViewModel: ObservableObject{
                                                  "gioitinh":gioitinh,
                                                  "ngaysinh":Calendar.current.startOfDay(for: ngaysinh),
                                                  "email":email,
-                                                 "password":password])
+                                                 "password":password,
+                                                 "bookmark":[] ])
         
         ho = ""
         ten = ""

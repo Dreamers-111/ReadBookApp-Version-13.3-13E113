@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1F649E5F26384C8E1939EE2E /* Pods_ReadBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4196527F016A9AA48383E553 /* Pods_ReadBook.framework */; };
+		4D2C07D62805A2AE006ED086 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C07D52805A2AE006ED086 /* User.swift */; };
+		4D2C07D82805A343006ED086 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C07D72805A343006ED086 /* SignInViewModel.swift */; };
 		4D39E7C12800743B004E55F4 /* ReadBookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D39E7C02800743B004E55F4 /* ReadBookApp.swift */; };
 		4D39E7C32800743B004E55F4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D39E7C22800743B004E55F4 /* ContentView.swift */; };
 		4D39E7C52800743C004E55F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D39E7C42800743C004E55F4 /* Assets.xcassets */; };
@@ -32,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		4196527F016A9AA48383E553 /* Pods_ReadBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReadBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D2C07D52805A2AE006ED086 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		4D2C07D72805A343006ED086 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 		4D39E7BD2800743B004E55F4 /* ReadBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D39E7C02800743B004E55F4 /* ReadBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadBookApp.swift; sourceTree = "<group>"; };
 		4D39E7C22800743B004E55F4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -149,6 +153,7 @@
 			children = (
 				4D39E7D32800753C004E55F4 /* SignUpViewModel.swift */,
 				4D39E81528008688004E55F4 /* HomeViewModel.swift */,
+				4D2C07D72805A343006ED086 /* SignInViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -167,6 +172,7 @@
 				4D39E81328008496004E55F4 /* Book.swift */,
 				4D39E8172800872A004E55F4 /* BookCategory.swift */,
 				4DE1ADCD280512F200C6A36B /* BookChapter.swift */,
+				4D2C07D52805A2AE006ED086 /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -289,6 +295,7 @@
 				4D39E7C32800743B004E55F4 /* ContentView.swift in Sources */,
 				4D39E81628008689004E55F4 /* HomeViewModel.swift in Sources */,
 				4D39E81428008496004E55F4 /* Book.swift in Sources */,
+				4D2C07D82805A343006ED086 /* SignInViewModel.swift in Sources */,
 				4D39E8182800872A004E55F4 /* BookCategory.swift in Sources */,
 				4D39E7D0280074EF004E55F4 /* SignUpView.swift in Sources */,
 				4D39E7F528007B4B004E55F4 /* SettingView.swift in Sources */,
@@ -300,6 +307,7 @@
 				4D39E7EF28007AE4004E55F4 /* HomeView.swift in Sources */,
 				4D39E7C12800743B004E55F4 /* ReadBookApp.swift in Sources */,
 				4D39E7F328007B2C004E55F4 /* BookmarkView.swift in Sources */,
+				4D2C07D62805A2AE006ED086 /* User.swift in Sources */,
 				4D39E7ED28007AB8004E55F4 /* SignInView.swift in Sources */,
 				4D39E7F928007B77004E55F4 /* BookPreviewView.swift in Sources */,
 				B66663C028018805004562AE /* DetailCategoryView.swift in Sources */,

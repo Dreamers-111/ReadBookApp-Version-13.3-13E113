@@ -9,14 +9,16 @@ import Foundation
 import FirebaseFirestore
 
 final class HomeViewModel: ObservableObject{
+
     @Published public private(set) var books1:[Book] = []
     @Published public private(set) var books2:[Book] = []
     @Published public private(set) var categories:[BookCategory] = []
 
     public private(set) var loadingListeners:[ListenerRegistration] = []
     public private(set) var searchingListeners:[ListenerRegistration] = []
+
     
-    private var db = Firestore.firestore()
+    private let db = Firestore.firestore()
     
     func fetchBookCategories() -> Void {
        let listener =  db.collection("categories").addSnapshotListener { snapshot, error in
