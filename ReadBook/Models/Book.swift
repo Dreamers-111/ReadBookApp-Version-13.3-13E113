@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 class Book{
+    let id: String
     let title:String
     let category:String
     let author:String
@@ -17,7 +18,8 @@ class Book{
     var image:Image{
         Image(imageName)
     }
-    init(title:String, category:String, author:String, about_author:String, imageName:String){
+    init(id: String, title:String, category:String, author:String, about_author:String, imageName:String){
+        self.id = id
         self.title = title
         self.category = category
         self.author = author
