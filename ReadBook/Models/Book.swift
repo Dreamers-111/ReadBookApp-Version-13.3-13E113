@@ -8,20 +8,30 @@
 import Foundation
 import SwiftUI
 
-class Book{
+class Book:Identifiable{
+    let id:String
     let title:String
-    let category:String
+    var category:String
     let author:String
-    let about_author:String
+    let totalChapters:Int
+    
     private let imageName:String
     var image:Image{
         Image(imageName)
     }
-    init(title:String, category:String, author:String, about_author:String, imageName:String){
+
+    var aboutAuthor:String!
+    var description:String!
+    var chapters:[BookChapter] = []
+    
+    init(id:String, title:String, category:String, author:String, imageName:String, totalChapters:Int){
+        self.id = id
         self.title = title
         self.category = category
         self.author = author
-        self.about_author = about_author
         self.imageName = imageName
+        self.totalChapters = totalChapters
     }
+
 }
+

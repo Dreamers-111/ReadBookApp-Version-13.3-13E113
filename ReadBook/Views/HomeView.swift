@@ -7,41 +7,10 @@
 
 import SwiftUI
 
-class myBook{
-    var title:String
-    var author:String
-    private var imageName:String
-    var image:Image{
-        Image(imageName)
-    }
-    init(title:String,author:String,imageName:String){
-        self.title = title
-        self.author = author
-        self.imageName = imageName
-    }
-}
-
 struct HomeView: View {
     @StateObject private var vm = HomeViewModel()
     @State private var username: String = "Dreamers"
-    
     @State private var searchText = ""
-    
-    let categories = ["Tiểu thuyết","Khoa học","Lãng mạn","Tâm lý","Giáo dục"]
-    
-    let books1 = [myBook(title: "20 giờ đầu tiên", author: "Josh Kaufman", imageName: "nhasachmienphi-20-gio-dau-tien"),
-                  myBook(title: "Một ngày cho đời", author: "Christin Antoni", imageName: "nhasachmienphi-mot-ngay-cho-mot-doi"),
-                  myBook(title: "Vượn trần trụi", author: "Desmond Morris", imageName: "nhasachmienphi-vuon-tran-trui"),
-                  myBook(title: "Juliet", author: "Anne Fortier", imageName: "nhasachmienphi-juliet")]
-    let books2 = [myBook(title: "Bảy năm sáu", author: "Guillaume Musso", imageName: "nhasachmienphi-bay-nam-sau"),
-                  myBook(title: "Sói thảo nguyên", author: "Hẻmann hesse", imageName: "nhasachmienphi-soi-thao-nguyen"),
-                  myBook(title: "20 giờ đầu tiên", author: "Josh Kaufman", imageName: "nhasachmienphi-20-gio-dau-tien"),
-                  myBook(title: "Juliet", author: "Anne Fortier", imageName: "nhasachmienphi-juliet")]
-    
-    @State private var selectedCategoryIndex = 0
-    
-    @State private var selectedBottomNavBarItemIndex = 0
-    
     @State var size = UIScreen.main.bounds.width / 1.2
     
     var body: some View {
@@ -49,8 +18,7 @@ struct HomeView: View {
         ZStack {
             
             ScrollView(showsIndicators: true) {
-                VStack(alignment: .leading, spacing:0) {
-                    
+                VStack(alignment: .leading, spacing:0) {                    
                     welcomeText(username: $username)
                         .padding(.horizontal)
                         .padding(.vertical)
@@ -62,11 +30,13 @@ struct HomeView: View {
                     theLoaiBtn_bookMarkBtn()
                         .padding()
                     
-                    categoryBar(categories: vm.categories)
-                    .padding(.leading)
+                    categoryBar(vm: vm, categories: vm.categories)
+                        .padding(.leading)
                     
-                    listBook(books: books1)
-                        .padding(.vertical).padding(.leading)
+                    
+                    listBook(books: vm.books1)
+                        .padding(.vertical)
+                        .padding(.leading)
                     
                     Text("Sách mới")
                         .font(.system(size: 24))
@@ -75,7 +45,7 @@ struct HomeView: View {
                         .padding(.top)
                         .padding(.horizontal)
                     
-                    listBook(books: books2)
+                    listBook(books: vm.books2)
                         .padding(.leading)
                         .padding(.vertical)
                         .padding(.bottom)
@@ -93,8 +63,8 @@ struct HomeView: View {
                 .cornerRadius(8)
                 .frame(maxHeight: .infinity, alignment: .top)
                 .padding(.horizontal)
-                
-                
+            
+            
             HStack {
                 MenuView(size: $size)
                     .cornerRadius(20)
@@ -104,14 +74,18 @@ struct HomeView: View {
                 Spacer()
             }
             .animation(.spring())
-
-        }
-        .onAppear {
-            self.vm.fectchBookCategories()
             
         }
         .navigationBarHidden(true)
-
+        .onAppear {
+            vm.fetchBookCategories()
+            vm.fetchBooks()
+        }
+        .onDisappear {
+            vm.removeAllListeners()
+        }
+        
+        
     }
 }
 
@@ -225,29 +199,29 @@ struct theLoaiBtn_bookMarkBtn: View {
             NavigationLink(tag: 1, selection: $action) {
                 CategoryView()
             } label: {
-                 Button {
-                     self.action = 1
-                 } label: {
-                     button(image:Image("photo-1507842217343-583bb7270b66"),
-                            colorOverlay: Color(red: 0.6784313917160034, green: 0.8117647171020508, blue: 0.9176470637321472).opacity(0.85),
-                            title: "THỂ LOẠI",
-                            subtitle: "CHUYÊN MỤC")
-                     .padding(.trailing)
-                 }
+                Button {
+                    self.action = 1
+                } label: {
+                    button(image:Image("photo-1507842217343-583bb7270b66"),
+                           colorOverlay: Color(red: 0.6784313917160034, green: 0.8117647171020508, blue: 0.9176470637321472).opacity(0.85),
+                           title: "THỂ LOẠI",
+                           subtitle: "CHUYÊN MỤC")
+                    .padding(.trailing)
+                }
             }
-//
+            //
             NavigationLink(tag: 2, selection: $action) {
                 BookmarkView()
             } label: {
-                 Button {
-                     self.action = 2
-                 } label: {
-                     button(image:Image("photo-1617635837145-cf409451c41e"),
-                            colorOverlay: Color(red: 0.5843137502670288, green: 0.7803921699523926, blue: 0.7372549176216125).opacity(0.85),
-                            title: "BOOKMARK",
-                            subtitle: "TRUYỆN CỦA BẠN")
-                     .padding(.leading)
-                 }
+                Button {
+                    self.action = 2
+                } label: {
+                    button(image:Image("photo-1617635837145-cf409451c41e"),
+                           colorOverlay: Color(red: 0.5843137502670288, green: 0.7803921699523926, blue: 0.7372549176216125).opacity(0.85),
+                           title: "BOOKMARK",
+                           subtitle: "TRUYỆN CỦA BẠN")
+                    .padding(.leading)
+                }
             }
             
         }
@@ -285,12 +259,11 @@ struct button: View {
 struct categoryBarItem: View {
     let name:String
     let id:String
-    let action:()->Void
     let isSelected:Bool
+    let action:()->Void
     var body: some View {
         Button {
             action()
-            print(id)
         } label: {
             Text(name)
                 .font(.system(size: 16))
@@ -303,16 +276,23 @@ struct categoryBarItem: View {
 }
 
 struct categoryBar: View {
-    let   categories:[BookCategory]
+    @ObservedObject var vm:HomeViewModel
+    let categories:[BookCategory]
     @State private var selectedCategoryIndex = 0
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(categories.indices, id: \.self) { index in
-                    categoryBarItem(name: categories[index].name,
-                                    id: categories[index].id,
-                                    action: {selectedCategoryIndex = index},
-                                    isSelected: index == selectedCategoryIndex)
+                    categoryBarItem(name: categories[index].name, id: categories[index].id, isSelected: index == selectedCategoryIndex) {
+                        selectedCategoryIndex = index
+                        vm.removeAllSearchingListeners()
+                        vm.fetchBooksByCategory(categoryId: categories[index].id)
+                    }
+                    .onAppear {
+                        if index == 0 {
+                            vm.fetchBooksByCategory(categoryId: categories[0].id)
+                        }
+                    }
                 }
             }
         }
@@ -320,9 +300,9 @@ struct categoryBar: View {
 }
 
 struct BookView: View {
-    let image:Image
     let title:String
     let author:String
+    let image:Image
     var body: some View {
         Button(action: {
             
@@ -349,12 +329,12 @@ struct BookView: View {
 }
 
 struct listBook: View {
-    let books:[myBook]
+    let books:[Book]
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false) {
-            HStack(){
-                ForEach(0..<books.count) { index in
-                    BookView(image: books[index].image, title: books[index].title, author: books[index].author)
+            HStack{
+                ForEach(books) { book in
+                    BookView(title: book.title, author: book.author, image: book.image)
                 }
             }
         }
@@ -406,55 +386,55 @@ struct MenuView: View {
     @Binding var size : CGFloat
     var body: some View {
         VStack(alignment: .leading) {
-                ZStack{
-                    HStack {
-                        Spacer()
-                        
-                        Button(action: {
-                            self.size =  UIScreen.main.bounds.width / 1.2
-                        }, label: {
-                            Image("close")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .padding()
-                                .zIndex(12)
-                        }).foregroundColor(.white)
-                    }
-                        .zIndex(1)
-                        .padding(.bottom)
-                        .padding(.bottom)
+            ZStack{
+                HStack {
+                    Spacer()
                     
-                    ZStack (alignment: .bottomLeading) {
-                        Rectangle()
-                            .fill(Color(#colorLiteral(red: 0.12941177189350128, green: 0.7215686440467834, blue: 0.572549045085907, alpha: 1)))
-                        .frame(height: 160)
-                        
-                        Image_TitleMenu()
-                    }
+                    Button(action: {
+                        self.size =  UIScreen.main.bounds.width / 1.2
+                    }, label: {
+                        Image("close")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .padding()
+                            .zIndex(12)
+                    }).foregroundColor(.white)
                 }
                 .zIndex(1)
+                .padding(.bottom)
+                .padding(.bottom)
                 
-                VStack(alignment: .leading) {
-                    Spacer()
-                    ButtonMenuAbove()
-                        .padding(.horizontal)
-        
+                ZStack (alignment: .bottomLeading) {
                     Rectangle()
-                        .frame(height: 0.5)
-                        .padding(.horizontal,30)
-                        
-                    ButtonMenuBelow()
-                        .padding(.horizontal)
-                
-                    Spacer()
-                    Spacer()
+                        .fill(Color(#colorLiteral(red: 0.12941177189350128, green: 0.7215686440467834, blue: 0.572549045085907, alpha: 1)))
+                        .frame(height: 160)
+                    
+                    Image_TitleMenu()
                 }
-                .background(Color(.white))
-                .offset(x: 0 , y: 0)
-                .foregroundColor(Color(#colorLiteral(red: 0.62,green: 0.62,blue: 0.62,alpha: 1)))
-
             }
-            .frame(width: UIScreen.main.bounds.width / 1.2)
+            .zIndex(1)
+            
+            VStack(alignment: .leading) {
+                Spacer()
+                ButtonMenuAbove()
+                    .padding(.horizontal)
+                
+                Rectangle()
+                    .frame(height: 0.5)
+                    .padding(.horizontal,30)
+                
+                ButtonMenuBelow()
+                    .padding(.horizontal)
+                
+                Spacer()
+                Spacer()
+            }
+            .background(Color(.white))
+            .offset(x: 0 , y: 0)
+            .foregroundColor(Color(#colorLiteral(red: 0.62,green: 0.62,blue: 0.62,alpha: 1)))
+            
+        }
+        .frame(width: UIScreen.main.bounds.width / 1.2)
     }
 }
 
@@ -467,8 +447,8 @@ struct Image_TitleMenu: View {
                     .frame(width: 100, height: 100)
                     .zIndex(1)
                 Text("DREAMERS")
-                        .font(.system(size: 22)).bold()
-                        .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
+                    .font(.system(size: 22)).bold()
+                    .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
             }.offset(x: 20, y: 25)
         }
     }
@@ -497,42 +477,42 @@ struct ButtonMenuAbove: View {
             NavigationLink(tag: 1, selection: $action) {
                 HomeView()
             } label: {
-                 Button {
-                     self.action = 1
-                     print("aloo")
-                 } label: {
-                     ButtonMenu(image:Image("home"), name: "Trang chủ")
-                 }
+                Button {
+                    self.action = 1
+                    print("aloo")
+                } label: {
+                    ButtonMenu(image:Image("home"), name: "Trang chủ")
+                }
             }
             
             NavigationLink(tag: 2, selection: $action) {
                 CategoryView()
             } label: {
-                 Button {
-                     self.action = 2
-                 } label: {
-                     ButtonMenu(image:Image("options-lines"), name: "Thể loại")
-                 }
+                Button {
+                    self.action = 2
+                } label: {
+                    ButtonMenu(image:Image("options-lines"), name: "Thể loại")
+                }
             }
             
             NavigationLink(tag: 3, selection: $action) {
                 BookmarkView()
             } label: {
-                 Button {
-                     self.action = 3
-                 } label: {
-                     ButtonMenu(image:Image("bookmark"), name: "Bookmark")
-                 }
+                Button {
+                    self.action = 3
+                } label: {
+                    ButtonMenu(image:Image("bookmark"), name: "Bookmark")
+                }
             }
             
             NavigationLink(tag: 4, selection: $action) {
                 SettingView()
             } label: {
-                 Button {
-                     self.action = 4
-                 } label: {
-                     ButtonMenu(image:Image("settings"), name: "Cài đặt")
-                 }
+                Button {
+                    self.action = 4
+                } label: {
+                    ButtonMenu(image:Image("settings"), name: "Cài đặt")
+                }
             }
         }
     }
@@ -545,42 +525,42 @@ struct ButtonMenuBelow: View {
             NavigationLink(tag: 1, selection: $action) {
                 HomeView()
             } label: {
-                 Button {
-                     self.action = 1
-                     print("aloo")
-                 } label: {
-                     ButtonMenu(image:Image("browser"), name: "Truy cập website")
-                 }
+                Button {
+                    self.action = 1
+                    print("aloo")
+                } label: {
+                    ButtonMenu(image:Image("browser"), name: "Truy cập website")
+                }
             }
             
             NavigationLink(tag: 2, selection: $action) {
                 CategoryView()
             } label: {
-                 Button {
-                     self.action = 2
-                 } label: {
-                     ButtonMenu(image:Image("star"), name: "Đánh giá 5 sao")
-                 }
+                Button {
+                    self.action = 2
+                } label: {
+                    ButtonMenu(image:Image("star"), name: "Đánh giá 5 sao")
+                }
             }
             
             NavigationLink(tag: 3, selection: $action) {
                 HomeView()
             } label: {
-                 Button {
-                     self.action = 3
-                 } label: {
-                     ButtonMenu(image:Image("email"), name: "Gửi phản hồi")
-                 }
+                Button {
+                    self.action = 3
+                } label: {
+                    ButtonMenu(image:Image("email"), name: "Gửi phản hồi")
+                }
             }
             
             NavigationLink(tag: 4, selection: $action) {
                 HomeView()
             } label: {
-                 Button {
-                     self.action = 4
-                 } label: {
-                     ButtonMenu(image:Image("settings"), name: "Chính sách bảo mật")
-                 }
+                Button {
+                    self.action = 4
+                } label: {
+                    ButtonMenu(image:Image("settings"), name: "Chính sách bảo mật")
+                }
             }
         }
     }
