@@ -66,6 +66,7 @@ struct userInputSignInView: View {
 
 struct buttonSignInView: View {
     @Binding var selection:Int?
+    @State var selection2:Int?
     var action:()->Void
     
     var body: some View {
@@ -91,11 +92,11 @@ struct buttonSignInView: View {
             }
             .padding(.bottom)
 
-            NavigationLink(tag: 2, selection: $selection) {
+            NavigationLink(tag: 2, selection: $selection2) {
                 SignUpView()
             } label: {
                 Button {
-                    self.selection = 2
+                    self.selection2 = 2
                 } label: {
                         Text("Bạn chưa có tài khoản?")
                             .font(.custom("Poppins Regular", size: 14))
@@ -119,11 +120,11 @@ struct buttonSignInView: View {
             .padding(.bottom)
                  
             
-            NavigationLink(tag: 1, selection: $selection) {
+            NavigationLink(tag: 1, selection: $selection2) {
                 SignUpView()
             } label: {
                 Button {
-                    self.selection = 1
+                    self.selection2 = 1
                 } label: {
                     Image(systemName: "chevron.up")
                         .font(.largeTitle)

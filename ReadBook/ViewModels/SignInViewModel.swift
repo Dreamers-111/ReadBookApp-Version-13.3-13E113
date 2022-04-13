@@ -17,7 +17,7 @@ final class SignInViewModel: ObservableObject{
         db.collection("users")
             .whereField("email", isEqualTo: email)
             .whereField("password", isEqualTo: password)
-            .getDocuments{ snapshot, error in
+            .addSnapshotListener{ snapshot, error in
                 guard let snapshop_ = snapshot, error == nil else {
                     print("error")
                     return
