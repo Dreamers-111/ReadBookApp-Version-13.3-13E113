@@ -30,8 +30,8 @@ final class HomeViewModel: ObservableObject{
             
             self.categories = documents.map { document -> BookCategory in
                 let data = document.data()
-                var name = data["name"] as? String ?? ""
-                var id = document.documentID
+                let name = data["name"] as? String ?? ""
+                let id = document.documentID
                 return BookCategory(id: id, name: name)
             }
         }
@@ -48,12 +48,12 @@ final class HomeViewModel: ObservableObject{
             }
             self.books2 = documents.map { document -> Book in
                 let data = document.data()
-                var id = document.documentID
-                var title = data["title"] as? String ?? ""
-                var author = data["author"] as? String ?? ""
-                var imageName = data["imageName"] as? String ?? ""
+                let id = document.documentID
+                let title = data["title"] as? String ?? ""
+                let author = data["author"] as? String ?? ""
+                let imageName = data["imageName"] as? String ?? ""
                 var category = ""
-                var totalChapters = data["totalChapters"] as? Int ?? 0
+                let totalChapters = data["totalChapters"] as? Int ?? 0
                 let book = Book(id: id, title: title, category: category, author: author, imageName: imageName, totalChapters: totalChapters)
                 
                 guard let categoryRef = data["category"] as? DocumentReference else{
@@ -87,12 +87,12 @@ final class HomeViewModel: ObservableObject{
              }
              self.books1 = documents.map { document -> Book in
                  let data = document.data()
-                 var id = document.documentID
-                 var title = data["title"] as? String ?? ""
+                 let id = document.documentID
+                 let title = data["title"] as? String ?? ""
+                 let author = data["author"] as? String ?? ""
+                 let imageName = data["imageName"] as? String ?? ""
                  var category = ""
-                 var author = data["author"] as? String ?? ""
-                 var totalChapters = data["totalChapters"] as? Int ?? 0
-                 var imageName = data["imageName"] as? String ?? ""
+                 let totalChapters = data["totalChapters"] as? Int ?? 0               
                  let book = Book(id: id, title: title, category: category, author: author, imageName: imageName, totalChapters: totalChapters)
                  
                  guard let categoryRef = data["category"] as? DocumentReference else{

@@ -10,8 +10,6 @@ import FirebaseFirestore
 
 final class BookPreviewViewModel: ObservableObject{
     
-
-    
     @Published public private(set) var books = [Book()]
     
     public private(set) var loadingListeners:[ListenerRegistration] = []

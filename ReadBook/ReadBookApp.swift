@@ -10,9 +10,13 @@ import Firebase
 
 @main
 struct ReadBookApp: App {
+    
+    @StateObject private var vm = SignInViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(vm)
         }
     }
     init(){

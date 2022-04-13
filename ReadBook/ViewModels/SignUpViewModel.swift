@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import FirebaseFirestore
 
-class SignUpViewModel: ObservableObject{
+final class SignUpViewModel: ObservableObject{
     
     private let db = Firestore.firestore()
     
@@ -32,6 +32,7 @@ class SignUpViewModel: ObservableObject{
     @Published private var isLast3Valid = false
     
     @Published var canSubmit = false
+    @Published private var isSubmitFail = false
     
     private var cancellAbleSet: Set<AnyCancellable> = []
     
@@ -106,65 +107,57 @@ class SignUpViewModel: ObservableObject{
             .store(in: &cancellAbleSet)
 
     }
-    
-    var hoPrompt: String{
-        isHoValid ?
-        ""
-        :
-        "Họ không được để trống."
-    }
-    
-    var tenPrompt: String{
-        isTenValid ?
-        ""
-        :
-        "Tên không được để trống."
-    }
-    
-    var gioitinhPrompt: String{
-        isGioiTinhValid ?
-        ""
-        :
-        "Giới tính không được để trống."
-    }
-    
+        
     var emailPrompt: String{
-        isEmailCriteriaValid ?
-        ""
-        :
-        "Hãy nhập một địa chỉ email hợp lệ."
+        if isSubmitFail && email != ""{
+            return "Địa chỉ email đã được sử dụng"
+        }
+        return ""
+        
     }
     
     var passwordPrompt: String{
-        isPasswordCriteriaValid ?
-        ""
-        :
-        "Mật khẩu phải có ít nhất 8 kí tự, có ít nhất một chữ số, một chữ cái và một kí tự đặc biệt"
+        if !isPasswordCriteriaValid{
+            return "Mật khẩu phải có ít nhất 8 kí tự, có ít nhất một chữ số, một chữ cái và một kí tự đặc biệt"
+        }
+        return ""
+        
     }
     
     var confirmPasswordPrompt: String{
-        isPasswordConfirmValid || confirmPassword == "" ?
-        ""
-        :
-        "Mật khẩu không khớp"
+        if !isPasswordConfirmValid && confirmPassword != "" && password != ""{
+            return "Mật khẩu không khớp"
+        }
+        return ""
     }
     
     func signUp() -> Void {
-        db.collection("user").addDocument(data: ["ho":ho,
-                                                 "ten":ten,
-                                                 "gioitinh":gioitinh,
-                                                 "ngaysinh":Calendar.current.startOfDay(for: ngaysinh),
-                                                 "email":email,
-                                                 "password":password,
-                                                 "bookmark":[] ])
-        
-        ho = ""
-        ten = ""
-        gioitinh = ""
-        email = ""
-        ngaysinh = Calendar.current.date(byAdding: .year, value: -12, to: Date())!
-        email = ""
-        password = ""
-        confirmPassword = ""
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments{ snapshot, error in
+            guard let snapshop_ = snapshot, error == nil else {
+                print("error")
+                return
+            }
+            guard snapshop_.documents == []  else {
+                self.isSubmitFail = true
+                print("user with id \(self.email) has already existed.")
+                return
+            }
+
+            self.isSubmitFail = false
+            self.db.collection("users").document().setData(["ho":self.ho,
+                                                      "ten":self.ten,
+                                                      "gioitinh":self.gioitinh,
+                                                      "ngaysinh":Calendar.current.startOfDay(for: self.ngaysinh),
+                                                      "email":self.email,
+                                                      "password":self.password])
+            self.ho = ""
+            self.ten = ""
+            self.gioitinh = ""
+            self.ngaysinh = Calendar.current.date(byAdding: .year, value: -12, to: Date())!
+            self.email = ""
+            self.password = ""
+            self.confirmPassword = ""
+        }
+      
     }
 }

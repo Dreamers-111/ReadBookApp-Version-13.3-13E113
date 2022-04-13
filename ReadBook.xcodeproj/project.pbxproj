@@ -153,9 +153,9 @@
 		4D39E7D12800750E004E55F4 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				4D2C07D72805A343006ED086 /* SignInViewModel.swift */,
 				4D39E7D32800753C004E55F4 /* SignUpViewModel.swift */,
 				4D39E81528008688004E55F4 /* HomeViewModel.swift */,
-				4D2C07D72805A343006ED086 /* SignInViewModel.swift */,
 				4DE913532805CB4900B50713 /* BookPreviewViewModel.swift */,
 			);
 			path = ViewModels;

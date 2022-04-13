@@ -199,7 +199,6 @@ struct readAndBookmark_ButtonView: View {
             Spacer()
             
             Button{
-                
                 print("Bookmarrk")
                 
             } label: {

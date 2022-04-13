@@ -6,24 +6,28 @@
 //
 import Foundation
 
-class User{
+struct User{
     var id:String
-    var email:String
-    var password:String
-    var gioitinh:String
     var ho:String
     var ten:String
-    var ngaysinh: String
-    var bookmark:[String]
+    var gioitinh:String
+    var ngaysinh: Date!
+    var email:String
+    var password:String
 
-    init(id:String,email:String, password: String, gioitinh: String, ho:String, ten:String,ngaysinh:String, bookmark:[String]){
-        self.id = id
-        self.email = email
-        self.password = password
-        self.gioitinh = gioitinh
-        self.ho = ho
-        self.ten = ten
-        self.ngaysinh = ngaysinh
-        self.bookmark = bookmark
+    init(){
+        self.id = ""
+        self.ho = ""
+        self.ten = ""
+        self.gioitinh = ""
+//      self.ngaysinh = nil
+        self.email = ""
+        self.password = ""
+    }
+    
+    func convertDateToString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        return dateFormatter.string(from: ngaysinh)
     }
 }

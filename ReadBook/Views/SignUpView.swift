@@ -14,10 +14,10 @@ struct SignUpView: View {
     var body: some View {
         ScrollView(showsIndicators:false) {
             VStack(spacing:0) {
-                titleSignUp()
-                imageSignUp().padding()
-                subtitleSighUp()
-                UserInput(fontsize: 16,
+                titleSignUpView()
+                imageSignUpView().padding()
+                subtitleSignUpView()
+                userInputSignUpView(fontsize: 16,
                           ho: $viewModel.ho,
                           ten: $viewModel.ten,
                           gioitinh: $viewModel.gioitinh,
@@ -26,9 +26,6 @@ struct SignUpView: View {
                           password: $viewModel.password,
                           confirmPassword: $viewModel.confirmPassword,
                           
-                          hoPrompt: viewModel.hoPrompt,
-                          tenPrompt: viewModel.tenPrompt,
-                          gioitinhPrompt: viewModel.gioitinhPrompt,
                           emailPrompt: viewModel.emailPrompt,
                           passwordPrompt: viewModel.passwordPrompt,
                           confirmPasswordPrompt: viewModel.confirmPasswordPrompt)
@@ -42,12 +39,12 @@ struct SignUpView: View {
                     .padding(.top)
             }
             .navigationBarTitle("")
-        .navigationBarHidden(true)
+            .navigationBarHidden(true)
         }
     }
 }
 
-struct titleSignUp: View {
+struct titleSignUpView: View {
     var body: some View {
         Text("D R E A M E R S")
             .font(.system(size: 36))
@@ -58,7 +55,7 @@ struct titleSignUp: View {
     }
 }
 
-struct imageSignUp: View {
+struct imageSignUpView: View {
     var body: some View {
         Image("signup")
             .resizable()
@@ -71,7 +68,7 @@ struct imageSignUp: View {
     }
 }
 
-struct subtitleSighUp: View {
+struct subtitleSignUpView: View {
     var body: some View {
         Text("- WORDS HAVE POWER - ")
             .font(.system(size: 14))
@@ -82,9 +79,9 @@ struct subtitleSighUp: View {
     }
 }
 
-struct UserInput: View {
+struct userInputSignUpView: View {
     
-    let fontsize:CGFloat
+    var fontsize:CGFloat
     @Binding  var ho: String
     @Binding  var ten: String
     @Binding  var gioitinh: String
@@ -93,12 +90,9 @@ struct UserInput: View {
     @Binding  var password: String
     @Binding  var confirmPassword: String
     
-    let hoPrompt:String
-    let tenPrompt:String
-    let gioitinhPrompt:String
-    let emailPrompt:String
-    let passwordPrompt:String
-    let confirmPasswordPrompt:String
+    var emailPrompt:String
+    var passwordPrompt:String
+    var confirmPasswordPrompt:String
 
     let dateRange: PartialRangeThrough<Date> = {
         return ...Calendar.current.date(byAdding: .year, value: -12, to: Date())!
@@ -110,19 +104,19 @@ struct UserInput: View {
             myTextField1(type: "text",
                          fontsize: fontsize,
                          placeholder: "Họ", text: $ho,
-                         prompt: hoPrompt)
+                         prompt: "")
             
             //Tên
             myTextField1(type: "text",
                          fontsize: fontsize,
                          placeholder: "Tên", text: $ten
                          ,
-                         prompt: tenPrompt)
+                         prompt: "")
             //Giới tính
             myTextField1(type: "gender",
                          fontsize: fontsize,
                          placeholder: "Giới tính", text: $gioitinh,
-                         prompt: gioitinhPrompt)
+                         prompt: "")
             
             //Ngày sinh
                 DatePicker(selection: $ngaysinh,

@@ -10,39 +10,39 @@ import SwiftUI
 
 struct SignInView: View {
     
-    @State private  var email = ""
-    @State private  var password = ""
+    @State private var email = ""
+    @State private var password = ""
+    @EnvironmentObject var vm:SignInViewModel
     
     var body: some View {
-        
-     
             VStack(spacing:0)
             {
-                imageSignIn()
-                titleSignIn()
+                imageSignInView()
+                titleSignInView()
                     .padding(.vertical)
-                subtitleSighIn()
+                subtitleSighInView()
                     .padding(.bottom)
                     .padding(.bottom)
-                UserInput2(fontsize:18, email: $email, password: $password)
+                
+                userInputSignInView(fontsize:18, email: $email, password: $password)
                     .padding(.top)
                     .padding(.horizontal)
                     .padding(.horizontal)
                     .padding(.horizontal)
-                Buttons2(email: $email, password: $password)
+                buttonSignInView(selection: Binding.constant(vm.isLoggedIn ? 3 : nil)){
+                    vm.fectchUser(email: email, password: password)
+                }
                     .padding(.top)
                     .padding(.top)
             }
             .navigationBarTitle("")
             .navigationBarHidden(true)
             .ignoresSafeArea(edges: .top)
-        
-        
     }
 }
 
 
-struct UserInput2: View {
+struct userInputSignInView: View {
     var fontsize:CGFloat
     @Binding var email:String
     @Binding var password:String
@@ -64,11 +64,9 @@ struct UserInput2: View {
     }
 }
 
-struct Buttons2: View {
-    
-    @Binding var email:String
-    @Binding var password:String
-    @State private var selection:Int?
+struct buttonSignInView: View {
+    @Binding var selection:Int?
+    var action:()->Void
     
     var body: some View {
         VStack(spacing:0){
@@ -76,9 +74,7 @@ struct Buttons2: View {
                 HomeView()
             } label: {
                 Button {
-                    if email == "" && password == "" {
-                        self.selection = 3
-                    }
+                    action()
                 } label: {
                     Text("ĐĂNG NHẬP")
                         .font(.custom("Poppins Regular", size: 16))
@@ -147,7 +143,7 @@ struct SignInView_Previews: PreviewProvider {
     }
 }
 
-struct imageSignIn: View {
+struct imageSignInView: View {
     var body: some View {
         Image("signin")
             .resizable()
@@ -155,7 +151,7 @@ struct imageSignIn: View {
     }
 }
 
-struct titleSignIn: View {
+struct titleSignInView: View {
     var body: some View {
         Text("D R E A M E R S")
             .font(.system(size: 36))
@@ -168,7 +164,7 @@ struct titleSignIn: View {
     }
 }
 
-struct subtitleSighIn: View {
+struct subtitleSighInView: View {
     var body: some View {
         Text("- WORDS HAVE POWER - ")
             .font(.system(size: 14))

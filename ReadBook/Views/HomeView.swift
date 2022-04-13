@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var userVm:SignInViewModel
     @StateObject private var vm = HomeViewModel()
-    @State private var username: String = "Dreamers"
     @State private var searchText = ""
     @State var size = UIScreen.main.bounds.width / 1.2
-    @State private var selection:Int?
     
     var body: some View {
         
@@ -20,7 +19,7 @@ struct HomeView: View {
             
             ScrollView(showsIndicators: true) {
                 VStack(alignment: .leading, spacing:0) {
-                    welcomeText(username: $username)
+                    welcomeText(username: "\(userVm.user.ho) \(userVm.user.ten)")
                         .padding(.horizontal)
                         .padding(.vertical)
                         .padding(.top)
@@ -38,7 +37,7 @@ struct HomeView: View {
                     .padding(.leading)
                     
                     
-                    ListBookView(books: vm.books1, selection: $selection)
+                    ListBookView(books: vm.books1)
                         .padding(.vertical)
                         .padding(.leading)
                     
@@ -49,7 +48,7 @@ struct HomeView: View {
                         .padding(.top)
                         .padding(.horizontal)
                     
-                    ListBookView(books: vm.books2, selection: $selection)
+                    ListBookView(books: vm.books2)
                         .padding(.leading)
                         .padding(.vertical)
                         .padding(.bottom)
@@ -135,14 +134,14 @@ extension UIApplication {
 
 struct welcomeText: View {
     
-    @Binding var username:String
+    var username:String
     
     var body: some View {
         Text("Chào mừng quay trở lại,")
             .font(.custom("Poppins Medium", size: 16))
             .foregroundColor(Color(red: 0.62, green: 0.62, blue: 0.62))
         + Text(" \(username).")
-            .font(.custom("Poppins Medium", size: 16))
+            .font(.custom("Poppins Medium", size: 16)).bold()
             .foregroundColor(Color(red: 0.501960814, green: 0.501960814, blue: 0.501960814))
     }
 }
@@ -197,14 +196,14 @@ struct searchBar: View {
 
 struct theLoaiBtn_bookMarkBtn: View {
     @State var showView = false
-    @State private var action: Int? = 0
+    @State private var selection: Int? = 0
     var body: some View {
         HStack(spacing:0) {
-            NavigationLink(tag: 1, selection: $action) {
+            NavigationLink(tag: 1, selection: $selection) {
                 CategoryView()
             } label: {
                 Button {
-                    self.action = 1
+                    self.selection = 5
                 } label: {
                     button(image:Image("photo-1507842217343-583bb7270b66"),
                            colorOverlay: Color(red: 0.6784313917160034, green: 0.8117647171020508, blue: 0.9176470637321472).opacity(0.85),
@@ -214,11 +213,11 @@ struct theLoaiBtn_bookMarkBtn: View {
                 }
             }
             //
-            NavigationLink(tag: 2, selection: $action) {
+            NavigationLink(tag: 2, selection: $selection) {
                 BookmarkView()
             } label: {
                 Button {
-                    self.action = 2
+                    self.selection = 6
                 } label: {
                     button(image:Image("photo-1617635837145-cf409451c41e"),
                            colorOverlay: Color(red: 0.5843137502670288, green: 0.7803921699523926, blue: 0.7372549176216125).opacity(0.85),
@@ -342,7 +341,7 @@ struct BookView: View {
 
 struct ListBookView: View {
     var books:[Book]
-    @Binding var selection:Int?
+    @State var selection:Int?
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false) {
             HStack{
@@ -358,32 +357,73 @@ struct ListBookView: View {
     }
 }
 
-struct bottomNavBarItem: View {
-    var image:Image
-    var isActive:Bool
-    var action:()->Void
-    var body: some View {
-        Button(action: action) {
-            image
-                .font(.system(size: 24))
-                .foregroundColor( isActive ? Color(red: 212/255, green: 85/255, blue: 85/255)
-                                  : Color.black.opacity(0.6))
-                .frame(maxWidth:.infinity)
-        }
-    }
-}
+
 
 struct bottomNavBar: View {
-    @State private var selectedBottomNavBarItemIndex = 0
-    var imageNameArray = ["house","book","bookmark","gearshape"]
+    @State private var selectedBottomNavBarItemIndex = 1
+    @State var selection:Int?
     var body: some View {
         HStack{
-            ForEach(imageNameArray.indices, id: \.self) { i in
-                bottomNavBarItem(image: Image(systemName: "\(imageNameArray[i])"),
-                                 isActive: i == selectedBottomNavBarItemIndex,
-                                 action: {
-                    selectedBottomNavBarItemIndex = i
-                })
+        
+          
+            NavigationLink(tag: 7, selection: $selection) {
+                HomeView()
+            } label: {
+                Button {
+                    selection = nil
+                    selectedBottomNavBarItemIndex = 1
+                } label: {
+                    Image(systemName: "house")
+                        .font(.system(size: 24))
+                        .foregroundColor( 1 == selectedBottomNavBarItemIndex ? Color(red: 212/255, green: 85/255, blue: 85/255)
+                                          : Color.black.opacity(0.6))
+                        .frame(maxWidth:.infinity)
+                }
+            }
+
+            NavigationLink(tag: 8, selection: $selection) {
+                CategoryView()
+            } label: {
+                Button {
+                    selection = 8
+                    selectedBottomNavBarItemIndex = 2
+                } label: {
+                    Image(systemName: "book")
+                        .font(.system(size: 24))
+                        .foregroundColor( 2 == selectedBottomNavBarItemIndex ? Color(red: 212/255, green: 85/255, blue: 85/255)
+                                          : Color.black.opacity(0.6))
+                        .frame(maxWidth:.infinity)
+                }
+            }
+            
+            NavigationLink(tag: 9, selection: $selection) {
+                BookmarkView()
+            } label: {
+                Button {
+                    selection = 9
+                    selectedBottomNavBarItemIndex = 3
+                } label: {
+                    Image(systemName: "bookmark")
+                        .font(.system(size: 24))
+                        .foregroundColor( 3 == selectedBottomNavBarItemIndex ? Color(red: 212/255, green: 85/255, blue: 85/255)
+                                          : Color.black.opacity(0.6))
+                        .frame(maxWidth:.infinity)
+                }
+            }
+  
+            NavigationLink(tag: 10, selection: $selection) {
+                SettingView()
+            } label: {
+                Button {
+                    selection = 10
+                    selectedBottomNavBarItemIndex = 4
+                } label: {
+                    Image(systemName: "book")
+                        .font(.system(size: 24))
+                        .foregroundColor( 4 == selectedBottomNavBarItemIndex ? Color(red: 212/255, green: 85/255, blue: 85/255)
+                                          : Color.black.opacity(0.6))
+                        .frame(maxWidth:.infinity)
+                }
             }
         }
         .padding()
@@ -400,6 +440,7 @@ struct bottomNavBar: View {
 // MENU
 
 struct MenuView: View {
+    @EnvironmentObject var userVm:SignInViewModel
     @Binding var size : CGFloat
     var body: some View {
         VStack(alignment: .leading) {
@@ -426,7 +467,7 @@ struct MenuView: View {
                         .fill(Color(#colorLiteral(red: 0.12941177189350128, green: 0.7215686440467834, blue: 0.572549045085907, alpha: 1)))
                         .frame(height: 160)
                     
-                    Image_TitleMenu()
+                    Image_TitleMenu(userName: "\(userVm.user.ho.uppercased()) \(userVm.user.ten.uppercased())")
                 }
             }
             .zIndex(1)
@@ -456,6 +497,7 @@ struct MenuView: View {
 }
 
 struct Image_TitleMenu: View {
+    var userName:String
     var body: some View {
         VStack{
             HStack(spacing: 10) {
@@ -463,7 +505,7 @@ struct Image_TitleMenu: View {
                     .resizable()
                     .frame(width: 100, height: 100)
                     .zIndex(1)
-                Text("DREAMERS")
+                Text(userName)
                     .font(.system(size: 22)).bold()
                     .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
             }.offset(x: 20, y: 25)
@@ -488,45 +530,44 @@ struct ButtonMenu: View {
 }
 
 struct ButtonMenuAbove: View {
-    @State private var action: Int? = 0
+    @State private var selection: Int? = 0
     var body: some View {
         VStack(alignment: .leading) {
-            NavigationLink(tag: 1, selection: $action) {
+            NavigationLink(tag: 1, selection: $selection) {
                 HomeView()
             } label: {
                 Button {
-                    self.action = 1
-                    print("aloo")
+                    self.selection = nil
                 } label: {
                     ButtonMenu(image:Image("home"), name: "Trang chủ")
                 }
             }
             
-            NavigationLink(tag: 2, selection: $action) {
+            NavigationLink(tag: 2, selection: $selection) {
                 CategoryView()
             } label: {
                 Button {
-                    self.action = 2
+                    self.selection = 2
                 } label: {
                     ButtonMenu(image:Image("options-lines"), name: "Thể loại")
                 }
             }
             
-            NavigationLink(tag: 3, selection: $action) {
+            NavigationLink(tag: 3, selection: $selection) {
                 BookmarkView()
             } label: {
                 Button {
-                    self.action = 3
+                    self.selection = 3
                 } label: {
                     ButtonMenu(image:Image("bookmark"), name: "Bookmark")
                 }
             }
             
-            NavigationLink(tag: 4, selection: $action) {
+            NavigationLink(tag: 4, selection: $selection) {
                 SettingView()
             } label: {
                 Button {
-                    self.action = 4
+                    self.selection = 4
                 } label: {
                     ButtonMenu(image:Image("settings"), name: "Cài đặt")
                 }
@@ -536,45 +577,44 @@ struct ButtonMenuAbove: View {
 }
 
 struct ButtonMenuBelow: View {
-    @State private var action: Int? = 0
+    @State private var selection: Int? = 0
     var body: some View{
         VStack(alignment: .leading) {
-            NavigationLink(tag: 1, selection: $action) {
+            NavigationLink(tag: 1, selection: $selection) {
                 HomeView()
             } label: {
                 Button {
-                    self.action = 1
-                    print("aloo")
+                    self.selection = nil
                 } label: {
                     ButtonMenu(image:Image("browser"), name: "Truy cập website")
                 }
             }
             
-            NavigationLink(tag: 2, selection: $action) {
+            NavigationLink(tag: 2, selection: $selection) {
                 CategoryView()
             } label: {
                 Button {
-                    self.action = 2
+                    self.selection = nil
                 } label: {
                     ButtonMenu(image:Image("star"), name: "Đánh giá 5 sao")
                 }
             }
             
-            NavigationLink(tag: 3, selection: $action) {
+            NavigationLink(tag: 3, selection: $selection) {
                 HomeView()
             } label: {
                 Button {
-                    self.action = 3
+                    self.selection = nil
                 } label: {
                     ButtonMenu(image:Image("email"), name: "Gửi phản hồi")
                 }
             }
             
-            NavigationLink(tag: 4, selection: $action) {
+            NavigationLink(tag: 4, selection: $selection) {
                 HomeView()
             } label: {
                 Button {
-                    self.action = 4
+                    self.selection = nil
                 } label: {
                     ButtonMenu(image:Image("settings"), name: "Chính sách bảo mật")
                 }
