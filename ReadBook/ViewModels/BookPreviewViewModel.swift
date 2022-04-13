@@ -60,7 +60,8 @@ final class BookPreviewViewModel: ObservableObject{
                 let data = documents[0].data()
                 book.aboutAuthor = data["aboutAuthor"] as? String ?? ""
                 book.description = data["description"] as? String ?? ""
-                book.chapters = (data["chapters"] as? [Dictionary<String, Any>] ?? []).map({ dictionary -> BookChapter in
+                book.chapters = (data["chapters"] as? [Dictionary<String, Any>] ?? [["chapterName":"Lỗi","chapterContent":"Lỗi"]])
+                    .map({ dictionary -> BookChapter in
                     return BookChapter(name: dictionary["chapterName"] as? String ?? "",
                                        content: dictionary["chapterContent"] as? String ?? "")
                 })

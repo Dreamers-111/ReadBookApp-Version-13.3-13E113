@@ -8,8 +8,19 @@
 import Foundation
 
 struct BookChapter{
+    
+    @propertyWrapper
+    struct fixNewLineForString{
+        private var str = ""
+        var wrappedValue:String {
+            get {return str.replacingOccurrences(of: "\\n", with: "\n")}
+            set {str = newValue}
+        }
+    }
+    
     var name:String
-    var content:String
+    @fixNewLineForString var content:String
+    
     init(){
         name = ""
         content = ""

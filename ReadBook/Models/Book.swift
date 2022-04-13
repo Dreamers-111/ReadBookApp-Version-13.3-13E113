@@ -8,21 +8,37 @@
 import Foundation
 import SwiftUI
 
-class Book:Identifiable,ObservableObject{
-    var id:String!
-    var title:String!
-    var category:String!
-    var author:String!
-    var totalChapters:Int!
+class Book:Identifiable{
     
-    var imageName:String!
+    @propertyWrapper
+    struct fixNewLineForString{
+        private var str:String!
+        var wrappedValue:String! {
+            get {return str.replacingOccurrences(of: "\\n", with: "\n")}
+            set {
+                if newValue != nil{
+                    str = newValue
+                }
+                else{
+                    print("New value for string is nil!")
+                }
+            }
+        }
+    }
+    
+    var id:String
+    var title:String
+    var category:String
+    var author:String
+    var totalChapters:Int
+    var imageName:String
     var image:Image{
         Image(imageName)
     }
 
 
-    var aboutAuthor:String!
-    var description:String!
+    @fixNewLineForString var aboutAuthor:String!
+    @fixNewLineForString var description:String!
     var chapters:[BookChapter]!
     
     init(){

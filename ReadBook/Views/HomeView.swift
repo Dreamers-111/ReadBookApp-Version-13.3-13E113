@@ -307,7 +307,7 @@ struct BookView: View {
     var title:String
     var author:String
     var image:Image
-    var tag:Int
+    var tag = Int.random(in: 1...7) * Int.random(in: 1...7) * Int.random(in: 1...7) * Int.random(in: 1...7) * Int.random(in: 1...7)
     @Binding var selection:Int?
     var body: some View {
         NavigationLink(tag: tag, selection: $selection) {
@@ -351,7 +351,6 @@ struct ListBookView: View {
                              title: books[index].title,
                              author: books[index].author,
                              image: books[index].image,
-                             tag:index,
                              selection: $selection)
                 }
             }
@@ -379,7 +378,7 @@ struct bottomNavBar: View {
     var imageNameArray = ["house","book","bookmark","gearshape"]
     var body: some View {
         HStack{
-            ForEach(0..<imageNameArray.count) { i in
+            ForEach(imageNameArray.indices, id: \.self) { i in
                 bottomNavBarItem(image: Image(systemName: "\(imageNameArray[i])"),
                                  isActive: i == selectedBottomNavBarItemIndex,
                                  action: {

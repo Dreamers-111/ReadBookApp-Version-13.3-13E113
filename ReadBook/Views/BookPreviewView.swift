@@ -5,89 +5,65 @@
 //  Created by Hùng on 23/03/2022.
 //
 import SwiftUI
-    
+
 struct BookPreviewView: View {
     var bookId:String
+    @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
     @StateObject private var vm = BookPreviewViewModel()
     var body: some View {
-        
-            ZStack {
-                
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing : 5){
-                        back_ButtonView{}
-                            .padding(.horizontal)
-                        
-                        bookInfoView(image: vm.books[0].image, title: vm.books[0].title, author: vm.books[0].author)
-                            .padding(.horizontal)
-                        
-                        aboutAuthorBook_TextView(aboutAuthor: vm.books[0].aboutAuthor)
-                            .padding(.horizontal)
-                        
-                        descriptionBook_TextView(description: vm.books[0].description)
-                            .padding(.horizontal)
-            
-                        bookChapter_ForeachView(title: vm.books[0].title, chapters: vm.books[0].chapters)
-                            .padding(.horizontal)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                        
-                        Spacer()
-                        
-                    }
-                }
-            
-                VStack() {
+        ZStack {
+            ScrollView(showsIndicators: false){
+                VStack(alignment: .leading, spacing : 5){
+                    bookInfoView(image: vm.books[0].image, title: vm.books[0].title, author: vm.books[0].author)
+                        .padding(.horizontal)
                     
-                    ZStack{
-                        
-                        readAndBookmark_ButtonView(title: vm.books[0].title,
-                                                   name: vm.books[0].chapters[0].name,
-                                                   content: vm.books[0].chapters[0].content)
-                            .frame(maxHeight: .infinity,alignment: .bottom)
-                            .padding(.bottom)
-                            .padding(.bottom)
-                            .padding()
-
-                        bottomNavBar()
-                            
-                    }
+                    aboutAuthorBook_TextView(aboutAuthor: vm.books[0].aboutAuthor)
+                        .padding(.horizontal)
+                    
+                    descriptionBook_TextView(description: vm.books[0].description)
+                        .padding(.horizontal)
+                    
+                    bookChapter_ForeachView(title: vm.books[0].title, chapters: vm.books[0].chapters)
+                        .padding(.horizontal)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                        .padding(.bottom)
+                    
+                    Spacer()
+                    
                 }
-
             }
-            .onAppear {
-                vm.fetchBookById(bookId: bookId)
-            }
-            .onDisappear {
-                vm.removeAllLoadingListeners()
-            }
+            
+            readAndBookmark_ButtonView(title: vm.books[0].title,
+                                       name: vm.books[0].chapters[0].name,
+                                       content: vm.books[0].chapters[0].content)
+            .frame(maxHeight: .infinity,alignment: .bottom)
+            .padding(.bottom)
+            .padding(.bottom)
+            .padding()
+            
+            bottomNavBar()
         }
-    }
-
-struct back_ButtonView: View {
-    var action:()->Void
-    var body: some View {
-        HStack {
-            
-            Button {
-                print("Back to Book list")
-                action()
-            } label: {
-                Image("ArrowLeftBack")
-                    .resizable()
-                    .frame(width: 20, height: 20)
-            }
-            
-            Spacer()
-            
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading:
+                                CustomBackButtonView(
+                                    action:{
+                                        presentationMode.wrappedValue.dismiss()
+                                    }))
+        .navigationBarTitle(vm.books[0].title + " - " + vm.books[0].author, displayMode: .inline)
+        .onAppear {
+            vm.fetchBookById(bookId: bookId)
+        }
+        .onDisappear {
+            vm.removeAllLoadingListeners()
         }
     }
 }
+
 
 struct bookInfoView: View {
     var image:Image
@@ -158,7 +134,7 @@ struct bookChapter_ForeachView: View {
             
             Section(header:
                         
-                Text("Số chương:")
+                        Text("Số chương:")
                 .font(.system(size: 18))
                 .fontWeight(.medium)
                 .foregroundColor(Color.black)
@@ -168,11 +144,11 @@ struct bookChapter_ForeachView: View {
                 ForEach(chapters.indices, id: \.self) {
                     index in
                     NavigationLink(destination:
-                                        BookChapterView(
-                                            title: title,
-                                            name: chapters[index].name,
-                                            content: chapters[index].content)
-                                   )
+                                    BookChapterView(
+                                        title: title,
+                                        name: chapters[index].name,
+                                        content: chapters[index].content)
+                    )
                     {
                         VStack {
                             Text(chapters[index].name)
@@ -186,12 +162,10 @@ struct bookChapter_ForeachView: View {
                                 .opacity(0.5)
                         }
                     }
-                    .navigationBarHidden(true)
-                    
                 }
             }
         }
-
+        
     }
 }
 
@@ -207,7 +181,7 @@ struct readAndBookmark_ButtonView: View {
                 BookChapterView(
                     title: title,
                     name: name,
-                    content: name)
+                    content: content)
             } label: {
                 Button {
                     self.selection = 1
@@ -220,12 +194,12 @@ struct readAndBookmark_ButtonView: View {
                 .background(Color(red: 0.13, green: 0.72, blue: 0.57))
                 .cornerRadius(10)
                 .animation(.default)
-             }
+            }
             
             Spacer()
-                
+            
             Button{
-
+                
                 print("Bookmarrk")
                 
             } label: {
@@ -236,7 +210,8 @@ struct readAndBookmark_ButtonView: View {
                 
             }
             .frame(width: 168.0, height: 57.0)
-            .background(true ? Color(#colorLiteral(red: 0.78, green: 0.56, blue: 0.56, alpha: 1)) : Color(#colorLiteral(red: 0.83, green: 0.33, blue: 0.33, alpha: 1)))
+//          .background(true ? Color(#colorLiteral(red: 0.78, green: 0.56, blue: 0.56, alpha: 1)) : Color(#colorLiteral(red: 0.83, green: 0.33, blue: 0.33, alpha: 1)))
+            .background(Color(red: 0.78, green: 0.56, blue: 0.56).opacity(1))
             .cornerRadius(10)
             .animation(.default)
         }
