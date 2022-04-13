@@ -29,6 +29,7 @@
 		4D39E81628008689004E55F4 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D39E81528008688004E55F4 /* HomeViewModel.swift */; };
 		4D39E8182800872A004E55F4 /* BookCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D39E8172800872A004E55F4 /* BookCategory.swift */; };
 		4DE1ADCE280512F200C6A36B /* BookChapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE1ADCD280512F200C6A36B /* BookChapter.swift */; };
+		4DE913542805CB4900B50713 /* BookPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE913532805CB4900B50713 /* BookPreviewViewModel.swift */; };
 		B66663C028018805004562AE /* DetailCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66663BF28018805004562AE /* DetailCategoryView.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +57,7 @@
 		4D39E81528008688004E55F4 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		4D39E8172800872A004E55F4 /* BookCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCategory.swift; sourceTree = "<group>"; };
 		4DE1ADCD280512F200C6A36B /* BookChapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookChapter.swift; sourceTree = "<group>"; };
+		4DE913532805CB4900B50713 /* BookPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookPreviewViewModel.swift; sourceTree = "<group>"; };
 		9C65DEC32E44D06B997608ED /* Pods-ReadBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadBook.release.xcconfig"; path = "Target Support Files/Pods-ReadBook/Pods-ReadBook.release.xcconfig"; sourceTree = "<group>"; };
 		B66663BF28018805004562AE /* DetailCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCategoryView.swift; sourceTree = "<group>"; };
 		D7812C1406E042D95C641C2C /* Pods-ReadBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadBook.debug.xcconfig"; path = "Target Support Files/Pods-ReadBook/Pods-ReadBook.debug.xcconfig"; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				4D39E7D32800753C004E55F4 /* SignUpViewModel.swift */,
 				4D39E81528008688004E55F4 /* HomeViewModel.swift */,
 				4D2C07D72805A343006ED086 /* SignInViewModel.swift */,
+				4DE913532805CB4900B50713 /* BookPreviewViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				4D2C07D62805A2AE006ED086 /* User.swift in Sources */,
 				4D39E7ED28007AB8004E55F4 /* SignInView.swift in Sources */,
 				4D39E7F928007B77004E55F4 /* BookPreviewView.swift in Sources */,
+				4DE913542805CB4900B50713 /* BookPreviewViewModel.swift in Sources */,
 				B66663C028018805004562AE /* DetailCategoryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

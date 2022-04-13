@@ -43,7 +43,7 @@ struct SignInView: View {
 
 
 struct UserInput2: View {
-    let fontsize:CGFloat
+    var fontsize:CGFloat
     @Binding var email:String
     @Binding var password:String
     
@@ -68,7 +68,7 @@ struct Buttons2: View {
     
     @Binding var email:String
     @Binding var password:String
-    @State private var selection: Int? = nil
+    @State private var selection:Int?
     
     var body: some View {
         VStack(spacing:0){

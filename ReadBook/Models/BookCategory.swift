@@ -7,9 +7,7 @@
 
 import Foundation
 
-import SwiftUI
-
 struct BookCategory:Identifiable{
-    let id:String
-    let name:String
+    var id:String
+    var name:String
 }

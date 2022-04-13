@@ -23,15 +23,15 @@ final class HomeViewModel: ObservableObject{
     func fetchBookCategories() -> Void {
        let listener =  db.collection("categories").addSnapshotListener { snapshot, error in
             guard let documents = snapshot?.documents, error == nil else {
-                print("No documents")
+                print("No categories")
                 print(error!)
                 return
             }
             
             self.categories = documents.map { document -> BookCategory in
                 let data = document.data()
-                let name = data["name"] as? String ?? ""
-                let id = document.documentID
+                var name = data["name"] as? String ?? ""
+                var id = document.documentID
                 return BookCategory(id: id, name: name)
             }
         }
@@ -43,27 +43,27 @@ final class HomeViewModel: ObservableObject{
     func fetchBooks() -> Void {
        let listener1 = db.collection("books").addSnapshotListener { snapshot, error in
             guard let documents = snapshot?.documents, error == nil else{
-                print("No documents")
+                print("No books")
                 return
             }
             self.books2 = documents.map { document -> Book in
                 let data = document.data()
-                let id = document.documentID
-                let title = data["title"] as? String ?? ""
-                let author = data["author"] as? String ?? ""
-                let imageName = data["imageName"] as? String ?? ""
+                var id = document.documentID
+                var title = data["title"] as? String ?? ""
+                var author = data["author"] as? String ?? ""
+                var imageName = data["imageName"] as? String ?? ""
                 var category = ""
-                let totalChapters = data["totalChapters"] as? Int ?? 0
+                var totalChapters = data["totalChapters"] as? Int ?? 0
                 let book = Book(id: id, title: title, category: category, author: author, imageName: imageName, totalChapters: totalChapters)
                 
                 guard let categoryRef = data["category"] as? DocumentReference else{
-                    print("Book with id: \(id) have invalid category")
-                    return Book(id: id, title: title, category: category, author: author, imageName: imageName, totalChapters: totalChapters)
+                    print("Book with id: \(id) have invalid category field")
+                    return Book(id: "", title: "", category: "", author: "", imageName: "", totalChapters: 0)
                 }
                 
                 let listener2 = categoryRef.addSnapshotListener { document, error in
                     guard let data = document?.data(), error == nil else{
-                        print("No category")
+                        print("No category reference is found")
                         return
                     }
                     category = data["name"] as? String ?? ""
@@ -82,27 +82,27 @@ final class HomeViewModel: ObservableObject{
             .whereField("category", isEqualTo: db.collection("categories").document(categoryId))
             .addSnapshotListener { snapshot, error in
              guard let documents = snapshot?.documents, error == nil else{
-                 print("No documents")
+                 print("No books")
                  return
              }
              self.books1 = documents.map { document -> Book in
                  let data = document.data()
-                 let id = document.documentID
-                 let title = data["title"] as? String ?? ""
-                 let author = data["author"] as? String ?? ""
-                 let imageName = data["imageName"] as? String ?? ""
+                 var id = document.documentID
+                 var title = data["title"] as? String ?? ""
                  var category = ""
-                 let totalChapters = data["totalChapters"] as? Int ?? 0
+                 var author = data["author"] as? String ?? ""
+                 var totalChapters = data["totalChapters"] as? Int ?? 0
+                 var imageName = data["imageName"] as? String ?? ""
                  let book = Book(id: id, title: title, category: category, author: author, imageName: imageName, totalChapters: totalChapters)
                  
                  guard let categoryRef = data["category"] as? DocumentReference else{
-                     print("Book with id: \(id) have invalid category")
-                     return Book(id: id, title: title, category: category, author: author, imageName: imageName, totalChapters: totalChapters)
+                     print("Book with id: \(id) have invalid category field")
+                     return Book(id: "", title: "", category: "", author: "", imageName: "", totalChapters: 0)
                  }
                  
                  let listener2 = categoryRef.addSnapshotListener { document, error in
                      guard let data = document?.data(), error == nil else{
-                         print("No category")
+                         print("No category reference is found")
                          return
                      }
                      category = data["name"] as? String ?? ""
@@ -119,14 +119,14 @@ final class HomeViewModel: ObservableObject{
         for listener in loadingListeners {
             listener.remove()
         }
-        loadingListeners = []
+        loadingListeners.removeAll()
     }
     
     func removeAllSearchingListeners() -> Void {
         for listener in searchingListeners {
             listener.remove()
         }
-        searchingListeners = []
+        searchingListeners.removeAll()
     }
     
     func removeAllListeners() -> Void {

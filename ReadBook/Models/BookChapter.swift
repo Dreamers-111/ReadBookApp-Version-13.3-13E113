@@ -7,10 +7,17 @@
 
 import Foundation
 
-struct BookChapter:Identifiable{
-    let id:String
-    let name:String
-    let content:String
+struct BookChapter{
+    var name:String
+    var content:String
+    init(){
+        name = ""
+        content = ""
+    }
+    init(name:String, content:String){
+        self.name = name
+        self.content = content
+    }
 }
 
 

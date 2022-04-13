@@ -5,7 +5,6 @@
 //  Created by Hùng on 11/04/2022.
 //
 import Foundation
-import SwiftUI
 
 class User{
     var id:String

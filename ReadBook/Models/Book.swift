@@ -8,14 +8,14 @@
 import Foundation
 import SwiftUI
 
-class Book:Identifiable{
-    let id:String
-    let title:String
-    var category:String
-    let author:String
-    let totalChapters:Int
+class Book:Identifiable,ObservableObject{
+    var id:String!
+    var title:String!
+    var category:String!
+    var author:String!
+    var totalChapters:Int!
     
-    private let imageName:String
+    var imageName:String!
     var image:Image{
         Image(imageName)
     }
@@ -23,8 +23,19 @@ class Book:Identifiable{
 
     var aboutAuthor:String!
     var description:String!
-    var chapters:[BookChapter] = []
+    var chapters:[BookChapter]!
     
+    init(){
+        self.id = ""
+        self.title = ""
+        self.category = ""
+        self.author = ""
+        self.imageName = ""
+        self.totalChapters = 0
+        self.aboutAuthor = ""
+        self.description = ""
+        self.chapters = [BookChapter()]
+    }
     init(id:String, title:String, category:String, author:String, imageName:String, totalChapters:Int){
         self.id = id
         self.title = title

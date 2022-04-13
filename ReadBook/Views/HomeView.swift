@@ -12,13 +12,14 @@ struct HomeView: View {
     @State private var username: String = "Dreamers"
     @State private var searchText = ""
     @State var size = UIScreen.main.bounds.width / 1.2
+    @State private var selection:Int?
     
     var body: some View {
         
         ZStack {
             
             ScrollView(showsIndicators: true) {
-                VStack(alignment: .leading, spacing:0) {                    
+                VStack(alignment: .leading, spacing:0) {
                     welcomeText(username: $username)
                         .padding(.horizontal)
                         .padding(.vertical)
@@ -30,11 +31,14 @@ struct HomeView: View {
                     theLoaiBtn_bookMarkBtn()
                         .padding()
                     
-                    categoryBar(vm: vm, categories: vm.categories)
-                        .padding(.leading)
+                    categoryBar(categories: vm.categories) { id in
+                        vm.removeAllSearchingListeners()
+                        vm.fetchBooksByCategory(categoryId: id)
+                    }
+                    .padding(.leading)
                     
                     
-                    listBook(books: vm.books1)
+                    ListBookView(books: vm.books1, selection: $selection)
                         .padding(.vertical)
                         .padding(.leading)
                     
@@ -45,7 +49,7 @@ struct HomeView: View {
                         .padding(.top)
                         .padding(.horizontal)
                     
-                    listBook(books: vm.books2)
+                    ListBookView(books: vm.books2, selection: $selection)
                         .padding(.leading)
                         .padding(.vertical)
                         .padding(.bottom)
@@ -229,10 +233,10 @@ struct theLoaiBtn_bookMarkBtn: View {
 }
 
 struct button: View {
-    let image:Image
-    let colorOverlay:Color
-    let title:String
-    let subtitle:String
+    var image:Image
+    var colorOverlay:Color
+    var title:String
+    var subtitle:String
     var body: some View {
         ZStack {
             image
@@ -257,10 +261,10 @@ struct button: View {
 }
 
 struct categoryBarItem: View {
-    let name:String
-    let id:String
-    let isSelected:Bool
-    let action:()->Void
+    var name:String
+    var id:String
+    var isSelected:Bool
+    var action:()->Void
     var body: some View {
         Button {
             action()
@@ -276,8 +280,8 @@ struct categoryBarItem: View {
 }
 
 struct categoryBar: View {
-    @ObservedObject var vm:HomeViewModel
-    let categories:[BookCategory]
+    var categories:[BookCategory]
+    var action:(String)->Void
     @State private var selectedCategoryIndex = 0
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false) {
@@ -285,12 +289,11 @@ struct categoryBar: View {
                 ForEach(categories.indices, id: \.self) { index in
                     categoryBarItem(name: categories[index].name, id: categories[index].id, isSelected: index == selectedCategoryIndex) {
                         selectedCategoryIndex = index
-                        vm.removeAllSearchingListeners()
-                        vm.fetchBooksByCategory(categoryId: categories[index].id)
+                        action(categories[index].id)
                     }
                     .onAppear {
                         if index == 0 {
-                            vm.fetchBooksByCategory(categoryId: categories[0].id)
+                            action(categories[0].id)
                         }
                     }
                 }
@@ -300,41 +303,56 @@ struct categoryBar: View {
 }
 
 struct BookView: View {
-    let title:String
-    let author:String
-    let image:Image
+    var id:String
+    var title:String
+    var author:String
+    var image:Image
+    var tag:Int
+    @Binding var selection:Int?
     var body: some View {
-        Button(action: {
-            
-        }, label: {
-            VStack(alignment: .center) {
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 160, height: 250)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                Text(title)
-                    .font(.system(size: 16))
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                    .foregroundColor(Color(red: 0.1, green: 0.1, blue: 0.11))
-                    .multilineTextAlignment(.center)
-                Text(author)
-                    .font(.system(size: 16))
-                    .foregroundColor(Color(red: 0.62, green: 0.62, blue: 0.62))
-                    .multilineTextAlignment(.center)
+        NavigationLink(tag: tag, selection: $selection) {
+            BookPreviewView(bookId: id)
+        } label: {
+            Button {
+                selection = tag
+            } label: {
+                VStack(alignment: .center) {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 160, height: 250)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    Text(title)
+                        .font(.system(size: 16))
+                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(Color(red: 0.1, green: 0.1, blue: 0.11))
+                        .multilineTextAlignment(.center)
+                    Text(author)
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(red: 0.62, green: 0.62, blue: 0.62))
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.trailing)
             }
-            .padding(.trailing)
-        })
+            
+        }
+        
     }
 }
 
-struct listBook: View {
-    let books:[Book]
+struct ListBookView: View {
+    var books:[Book]
+    @Binding var selection:Int?
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false) {
             HStack{
-                ForEach(books) { book in
-                    BookView(title: book.title, author: book.author, image: book.image)
+                ForEach(books.indices, id: \.self) { index in
+                    BookView(id : books[index].id,
+                             title: books[index].title,
+                             author: books[index].author,
+                             image: books[index].image,
+                             tag:index,
+                             selection: $selection)
                 }
             }
         }
@@ -342,9 +360,9 @@ struct listBook: View {
 }
 
 struct bottomNavBarItem: View {
-    let image:Image
-    let isActive:Bool
-    let action:()->Void
+    var image:Image
+    var isActive:Bool
+    var action:()->Void
     var body: some View {
         Button(action: action) {
             image
@@ -358,7 +376,7 @@ struct bottomNavBarItem: View {
 
 struct bottomNavBar: View {
     @State private var selectedBottomNavBarItemIndex = 0
-    let imageNameArray = ["house","book","bookmark","gearshape"]
+    var imageNameArray = ["house","book","bookmark","gearshape"]
     var body: some View {
         HStack{
             ForEach(0..<imageNameArray.count) { i in
@@ -455,8 +473,8 @@ struct Image_TitleMenu: View {
 }
 
 struct ButtonMenu: View {
-    let image:Image
-    let name:String
+    var image:Image
+    var name:String
     var body: some View {
         HStack{
             image
