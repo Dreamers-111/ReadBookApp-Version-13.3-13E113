@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var selectedBottomNavBarItemIndex = 1
     @EnvironmentObject var userVm:SignInViewModel
     @StateObject private var vm = HomeViewModel()
     @State private var searchText = ""
@@ -59,7 +60,7 @@ struct HomeView: View {
             .padding(.top)
             .padding(.top)
             
-            bottomNavBar()
+            bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
             
             MenuTop(size: $size)
                 .background(Color.white.opacity(0.5))
@@ -199,7 +200,7 @@ struct theLoaiBtn_bookMarkBtn: View {
     @State private var selection: Int? = 0
     var body: some View {
         HStack(spacing:0) {
-            NavigationLink(tag: 1, selection: $selection) {
+            NavigationLink(tag: 5, selection: $selection) {
                 CategoryView()
             } label: {
                 Button {
@@ -213,7 +214,7 @@ struct theLoaiBtn_bookMarkBtn: View {
                 }
             }
             //
-            NavigationLink(tag: 2, selection: $selection) {
+            NavigationLink(tag: 6, selection: $selection) {
                 BookmarkView()
             } label: {
                 Button {
@@ -360,17 +361,16 @@ struct ListBookView: View {
 
 
 struct bottomNavBar: View {
-    @State private var selectedBottomNavBarItemIndex = 1
+    @Binding var selectedBottomNavBarItemIndex:Int
     @State var selection:Int?
     var body: some View {
         HStack{
-        
           
             NavigationLink(tag: 7, selection: $selection) {
                 HomeView()
             } label: {
                 Button {
-                    selection = nil
+                    selection = 7
                     selectedBottomNavBarItemIndex = 1
                 } label: {
                     Image(systemName: "house")
@@ -418,7 +418,7 @@ struct bottomNavBar: View {
                     selection = 10
                     selectedBottomNavBarItemIndex = 4
                 } label: {
-                    Image(systemName: "book")
+                    Image(systemName: "gearshape")
                         .font(.system(size: 24))
                         .foregroundColor( 4 == selectedBottomNavBarItemIndex ? Color(red: 212/255, green: 85/255, blue: 85/255)
                                           : Color.black.opacity(0.6))
@@ -539,7 +539,7 @@ struct ButtonMenuAbove: View {
                 Button {
                     self.selection = nil
                 } label: {
-                    ButtonMenu(image:Image("home"), name: "Trang chủ")
+                    ButtonMenu(image:Image("home"), name: "Hồ sơ")
                 }
             }
             
@@ -580,14 +580,14 @@ struct ButtonMenuBelow: View {
     @State private var selection: Int? = 0
     var body: some View{
         VStack(alignment: .leading) {
-            NavigationLink(tag: 1, selection: $selection) {
-                HomeView()
-            } label: {
-                Button {
-                    self.selection = nil
-                } label: {
-                    ButtonMenu(image:Image("browser"), name: "Truy cập website")
+            Button(action: {
+                guard let url = URL(string: "https://docs.swift.org/swift-book/"), UIApplication.shared.canOpenURL(url)
+                else {
+                    return
                 }
+                UIApplication.shared.open(url as URL)
+            }) {
+                ButtonMenu(image:Image("browser"), name: "Truy cập website")
             }
             
             NavigationLink(tag: 2, selection: $selection) {

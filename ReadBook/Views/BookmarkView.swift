@@ -27,16 +27,19 @@ class detailBookmark {
 struct BookmarkView : View {
     
     @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
-    
+    @State private var selectedBottomNavBarItemIndex = 3
     let books =
     [detailBookmark(title: "20 giờ đầu tiên", author: "Josh Kaufman", imageName: "nhasachmienphi-20-gio-dau-tien", totalChapter: 12),
     detailBookmark(title: "Một ngày cho đời", author: "Christin Antoni", imageName: "nhasachmienphi-mot-ngay-cho-mot-doi",totalChapter: 13)]
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false){
-            
-            listBookmark(books: books)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
+        ZStack {
+            ScrollView(.vertical, showsIndicators: false){
+                
+                listBookmark(books: books)
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: CustomBackButtonView (

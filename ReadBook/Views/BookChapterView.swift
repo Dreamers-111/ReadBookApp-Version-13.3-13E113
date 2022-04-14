@@ -48,7 +48,7 @@ struct BookChapterView: View {
                 )
                 .navigationBarTitle(title + " - " + name, displayMode: .inline)
                 
-                bottomNavBar()
+                bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
             }
             
             changeFont_View(textSize: self.$textSize, isHide: self.$isHide)

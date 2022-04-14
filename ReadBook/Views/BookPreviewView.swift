@@ -8,6 +8,7 @@ import SwiftUI
 
 struct BookPreviewView: View {
     var bookId:String
+    @State private var selectedBottomNavBarItemIndex = 0
     @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
     @StateObject private var vm = BookPreviewViewModel()
     var body: some View {
@@ -46,7 +47,7 @@ struct BookPreviewView: View {
             .padding(.bottom)
             .padding()
             
-            bottomNavBar()
+            bottomNavBar(selectedBottomNavBarItemIndex: $selectedBottomNavBarItemIndex)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:

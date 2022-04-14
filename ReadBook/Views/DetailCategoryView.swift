@@ -7,35 +7,15 @@
 
 import SwiftUI
 
-class detailCategoryBook {
-    private var imageName: String
-    var image: Image{
-        Image(imageName)
-    }
-    var title: String
-    var author: String
-    var totalChapter: Int
-    var genre: String
-    
-    init(imageName: String, title: String, author: String,totalChapter: Int, genre: String) {
-        self.imageName = imageName
-        self.title = title
-        self.author = author
-        self.totalChapter = totalChapter
-        self.genre = genre
-    }
-}
-
 struct DetailCategoryView: View {
-    
     @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
-    
-    let book: [detailCategoryBook]
+    @State private var selection:Int?
+    @StateObject private var vm = HomeViewModel()
     let category: String
+    let categoryId: String
     var body: some View {
         ScrollView(.vertical, showsIndicators: false){
-            
-            detailList(books: book)
+            detailList(selection: $selection, books: vm.books1)
                 .padding()
                 .navigationBarBackButtonHidden(true)
                 .navigationBarItems(leading: CustomBackButtonView (
@@ -44,56 +24,72 @@ struct DetailCategoryView: View {
                                         })
                                     )
                 .navigationBarTitle("\(category)", displayMode: .inline)
+                .onAppear {
+                    vm.fetchBooksByCategory(categoryId: categoryId)
+                }
+                .onDisappear {
+                    vm.removeAllListeners()
+                }
         }
     }
 }
 
 struct itemList :  View {
-
+    var id:String
     let image: Image
     let title: String
     let author: String
-    let totalChapter: Int
-    let genre: String
+    var tag = Int.random(in: 1...7) * Int.random(in: 1...7) * Int.random(in: 1...7) * Int.random(in: 1...7) * Int.random(in: 1...7)
+    @Binding var selection:Int?
+    let totalChapters: Int
     
     var body: some View {
-        HStack(spacing: 12) {
-            image
-                .resizable()
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .frame(width: 123, height: 191)
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text(title)
-                    .font(.system(size: 20))
-                    .fontWeight(.bold)
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Tác giả: \(author)")
-                        
-                    Text("Tổng số chương: \(totalChapter)")
-                        
-                    Text("Thể loại: \(genre)")
+        NavigationLink(tag: tag, selection: $selection) {
+            BookPreviewView(bookId: id)
+        } label: {
+            Button {
+                selection = tag
+            } label: {
+                HStack(spacing: 12) {
+                    image
+                        .resizable()
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .frame(width: 123, height: 191)
                     
-                    Spacer()
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(title)
+                            .font(.system(size: 17))
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.black)
+                            .multilineTextAlignment(.leading)
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Tác giả: \(author)")
+                            Text("Tổng số chương: \(totalChapters)")
+                            Spacer()
+                        }
+                        .foregroundColor(Color(#colorLiteral(red: 0.62, green: 0.62, blue: 0.62, alpha: 1)))
+                        .font(.system(size: 16))
+                    }
                 }
-                .foregroundColor(Color(#colorLiteral(red: 0.62, green: 0.62, blue: 0.62, alpha: 1)))
-                .font(.system(size: 16))
             }
         }
     }
 }
 
 struct detailList : View {
-    let books: [detailCategoryBook]
+    @Binding var selection:Int?
+    let books: [Book]
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading) {
-                ForEach(0..<books.count) { index in
-                    itemList(image: books[index].image,
-                         title: books[index].title,
-                         author: books[index].author,
-                         totalChapter: books[index].totalChapter,
-                         genre: books[index].genre)
+                ForEach(books) { book in
+                    itemList(id: book.id,
+                             image: book.image,
+                             title: book.title,
+                             author: book.author,
+                             selection: $selection,
+                             totalChapters: book.totalChapters)
                 }
             }
         }
@@ -102,6 +98,6 @@ struct detailList : View {
 
 struct DetailCategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailCategoryView(book: [], category: "")
+        DetailCategoryView(category: "", categoryId: "")
     }
 }
