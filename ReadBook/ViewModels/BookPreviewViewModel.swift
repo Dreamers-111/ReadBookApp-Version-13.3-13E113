@@ -11,6 +11,7 @@ import FirebaseFirestore
 final class BookPreviewViewModel: ObservableObject{
     
     @Published public private(set) var books = [Book()]
+    @Published public private(set) var isBookmark:Bool = false
     
     public private(set) var loadingListeners:[ListenerRegistration] = []
     
@@ -33,7 +34,6 @@ final class BookPreviewViewModel: ObservableObject{
 //          book.aboutAuthor = ""
 //          book.description = ""
 //          book.chapters = [BookChapter()]
-            
             
        
             guard let categoryRef = data["category"] as? DocumentReference else{
@@ -69,6 +69,18 @@ final class BookPreviewViewModel: ObservableObject{
             self.loadingListeners.append(listener3)
         }
         loadingListeners.append(listener1)
+    }
+    
+    func checkBookIsBookmarkById(bookId:String, userBookmark:[String]) -> Void {
+        
+        if userBookmark.contains(bookId)
+        {
+            
+            self.isBookmark = true
+            return
+        }
+        self.isBookmark = false
+        
     }
     
     func removeAllLoadingListeners() -> Void {

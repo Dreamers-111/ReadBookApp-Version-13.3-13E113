@@ -119,17 +119,16 @@ struct userInputSignUpView: View {
                          prompt: "")
             
             //Ngày sinh
-                DatePicker(selection: $ngaysinh,
-                           in: dateRange,
-                           displayedComponents: .date) {
-                        Text("Birthday")
-                            .font(.system(size: fontsize))
-                            .foregroundColor(Color(red: 0.129, green: 0.722, blue: 0.573))
-                }
-                .accentColor(Color(red: 0.129, green: 0.722, blue: 0.573))
-                .padding(.bottom)
+            DatePicker(selection: $ngaysinh,
+                       in: dateRange,
+                       displayedComponents: .date) {
+                    Text("Birthday")
+                        .font(.system(size: fontsize))
+                        .foregroundColor(Color(red: 0.129, green: 0.722, blue: 0.573))
+            }
+            .accentColor(Color(red: 0.129, green: 0.722, blue: 0.573))
+            .padding(.bottom)
              
-
             //Email
             myTextField1(type: "text",
                          fontsize: fontsize,
@@ -173,15 +172,12 @@ struct Buttons: View {
                                       green: 0.7215686440467834,
                                       blue: 0.572549045085907))
                     .cornerRadius(16)
-                
             }
             .padding(.bottom)
             .padding(.bottom)
             .opacity(canSubmit ? 1 : 0.6)
             .disabled(!canSubmit)
 
-    
-                        
             NavigationLink(tag: 1, selection: $selection) {
                 SignInView()
             } label: {

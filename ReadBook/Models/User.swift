@@ -14,7 +14,7 @@ struct User{
     var ngaysinh: Date!
     var email:String
     var password:String
-
+    var bookmark:[String]
     init(){
         self.id = ""
         self.ho = ""
@@ -23,6 +23,7 @@ struct User{
 //      self.ngaysinh = nil
         self.email = ""
         self.password = ""
+        self.bookmark = []
     }
     
     func convertDateToString() -> String {

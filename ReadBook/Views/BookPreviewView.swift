@@ -8,6 +8,7 @@ import SwiftUI
 
 struct BookPreviewView: View {
     var bookId:String
+    @EnvironmentObject var userVm:SignInViewModel
     @State private var selectedBottomNavBarItemIndex = 0
     @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
     @StateObject private var vm = BookPreviewViewModel()
@@ -39,9 +40,8 @@ struct BookPreviewView: View {
                 }
             }
             
-            readAndBookmark_ButtonView(title: vm.books[0].title,
-                                       name: vm.books[0].chapters[0].name,
-                                       content: vm.books[0].chapters[0].content)
+            readAndBookmark_ButtonView(isBookmark: vm.isBookmark, title: vm.books[0].title,
+                name: vm.books[0].chapters[0].name, content: vm.books[0].chapters[0].content)
             .frame(maxHeight: .infinity,alignment: .bottom)
             .padding(.bottom)
             .padding(.bottom)
@@ -58,6 +58,7 @@ struct BookPreviewView: View {
         .navigationBarTitle(vm.books[0].title + " - " + vm.books[0].author, displayMode: .inline)
         .onAppear {
             vm.fetchBookById(bookId: bookId)
+            vm.checkBookIsBookmarkById(bookId: bookId, userBookmark: userVm.user.bookmark)
         }
         .onDisappear {
             vm.removeAllLoadingListeners()
@@ -171,6 +172,7 @@ struct bookChapter_ForeachView: View {
 }
 
 struct readAndBookmark_ButtonView: View {
+    var isBookmark:Bool
     var title:String
     var name:String
     var content:String
@@ -200,8 +202,7 @@ struct readAndBookmark_ButtonView: View {
             Spacer()
             
             Button{
-                print("Bookmarrk")
-                
+                print("Bookmark")
             } label: {
                 
                 Text("Bookmak")
@@ -210,8 +211,7 @@ struct readAndBookmark_ButtonView: View {
                 
             }
             .frame(width: 168.0, height: 57.0)
-//          .background(true ? Color(#colorLiteral(red: 0.78, green: 0.56, blue: 0.56, alpha: 1)) : Color(#colorLiteral(red: 0.83, green: 0.33, blue: 0.33, alpha: 1)))
-            .background(Color(red: 0.78, green: 0.56, blue: 0.56).opacity(1))
+            .background(isBookmark ? Color(#colorLiteral(red: 0.78, green: 0.56, blue: 0.56, alpha: 1)) : Color(#colorLiteral(red: 0.83, green: 0.33, blue: 0.33, alpha: 1)))
             .cornerRadius(10)
             .animation(.default)
         }

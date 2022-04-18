@@ -7,35 +7,18 @@
 
 import SwiftUI
 
-class detailBookmark {
-    private var imageName: String
-    var image: Image{
-        Image(imageName)
-    }
-    var title: String
-    var author: String
-    var totalChapter: Int
-    
-    init(title: String, author: String, imageName: String, totalChapter: Int) {
-        self.title = title
-        self.author = author
-        self.imageName = imageName
-        self.totalChapter = totalChapter
-    }
-}
-
 struct BookmarkView : View {
     
     @Environment(\.presentationMode) var presentationMode : Binding<PresentationMode>
+    @EnvironmentObject var userVm:SignInViewModel
+    @StateObject private var vm = HomeViewModel()
+    @StateObject private var vmBm = BookmarkViewModel()
     @State private var selectedBottomNavBarItemIndex = 3
-    let books =
-    [detailBookmark(title: "20 giờ đầu tiên", author: "Josh Kaufman", imageName: "nhasachmienphi-20-gio-dau-tien", totalChapter: 12),
-    detailBookmark(title: "Một ngày cho đời", author: "Christin Antoni", imageName: "nhasachmienphi-mot-ngay-cho-mot-doi",totalChapter: 13)]
     var body: some View {
         ZStack {
             ScrollView(.vertical, showsIndicators: false){
                 
-                listBookmark(books: books)
+                listBookmark(books: vmBm.booksbookmark)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -48,6 +31,13 @@ struct BookmarkView : View {
                                 })
                             )
         .navigationBarTitle("BOOKMARK", displayMode: .inline)
+        .onAppear{
+            vm.fetchBooks()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.002) {
+                vmBm.fetchBooksBookmark(books: vm.books2, userBookmark: userVm.user.bookmark)
+            }
+           
+        }
     }
 }
 
@@ -56,7 +46,6 @@ struct listItems :  View {
     let image: Image
     let title: String
     let author: String
-    let totalChapter: Int
     
     var body: some View {
         HStack(alignment: .top, spacing: 15) {
@@ -71,8 +60,6 @@ struct listItems :  View {
                     .fontWeight(.bold)
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Tác giả: \(author)")
-                        
-                    Text("Tổng số chương: \(totalChapter)")
                     
                     Spacer()
                 }
@@ -83,6 +70,7 @@ struct listItems :  View {
             Image(systemName: "bookmark")
                 .resizable()
                 .frame(width: 22, height: 40,alignment: .top)
+                .foregroundColor(Color(red: 212/255, green: 85/255, blue: 85/255))
                 .padding(.leading)
                 .padding(.leading)
             
@@ -91,15 +79,14 @@ struct listItems :  View {
 }
 
 struct listBookmark : View {
-    let books: [detailBookmark]
+    let books: [Book]
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 10) {
-                ForEach(0..<books.count) { index in
+                ForEach(books.indices, id: \.self) { index in
                     listItems(image: books[index].image,
                          title: books[index].title,
-                         author: books[index].author,
-                         totalChapter: books[index].totalChapter)
+                         author: books[index].author)
                 }
             }
         }

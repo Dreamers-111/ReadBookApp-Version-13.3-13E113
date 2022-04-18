@@ -18,7 +18,7 @@ struct SettingView: View {
     }
     
     var body: some View {
-        ZStack() {
+        ZStack {
             Form {
                 Section(header: Text("Follow us on social media")) {
                     FormRowLinkView(icon: "globe", color: Color.pink, text: "Website", link: "https://docs.swift.org/swift-book/")

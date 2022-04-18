@@ -149,7 +149,8 @@ final class SignUpViewModel: ObservableObject{
                                                       "gioitinh":self.gioitinh,
                                                       "ngaysinh":Calendar.current.startOfDay(for: self.ngaysinh),
                                                       "email":self.email,
-                                                      "password":self.password])
+                                                      "password":self.password,
+                                                      "bookmark":[]])
             self.ho = ""
             self.ten = ""
             self.gioitinh = ""

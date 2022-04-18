@@ -11,10 +11,11 @@ import FirebaseFirestore
 final class SignInViewModel: ObservableObject{
     @Published var user = User()
     @Published var isLoggedIn = false
+    public private(set) var loadingListeners:[ListenerRegistration] = []
     private let db = Firestore.firestore()
     
     func fectchUser(email:String,password:String) -> Void {
-        db.collection("users")
+       let listener = db.collection("users")
             .whereField("email", isEqualTo: email)
             .whereField("password", isEqualTo: password)
             .addSnapshotListener{ snapshot, error in
@@ -35,10 +36,15 @@ final class SignInViewModel: ObservableObject{
                 self.user.ngaysinh = data["ngaysinh"] as? Date
                 self.user.email = data["email"] as? String ?? ""
                 self.user.password = data["password"] as? String ?? ""
+                self.user.bookmark = data["bookBookmark"] as? [String] ?? []
                 self.isLoggedIn = true
             }
+        loadingListeners.append(listener)
     }
-    
-    
-    
+    func removeAllLoadingListeners() -> Void {
+        for listener in loadingListeners {
+            listener.remove()
+        }
+        loadingListeners.removeAll()
+    }
 }

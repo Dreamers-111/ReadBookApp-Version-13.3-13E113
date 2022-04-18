@@ -15,9 +15,7 @@ struct HomeView: View {
     @State var size = UIScreen.main.bounds.width / 1.2
     
     var body: some View {
-        
         ZStack {
-            
             ScrollView(showsIndicators: true) {
                 VStack(alignment: .leading, spacing:0) {
                     welcomeText(username: "\(userVm.user.ho) \(userVm.user.ten)")
@@ -36,7 +34,6 @@ struct HomeView: View {
                         vm.fetchBooksByCategory(categoryId: id)
                     }
                     .padding(.leading)
-                    
                     
                     ListBookView(books: vm.books1)
                         .padding(.vertical)
@@ -88,13 +85,13 @@ struct HomeView: View {
         .onDisappear {
             vm.removeAllListeners()
         }
-        
-        
     }
 }
 
 struct MenuTop: View {
     @Binding var size: CGFloat
+    @State private var selection: Int? = 0
+    
     var body: some View {
         HStack {
             Button(action: {
@@ -107,12 +104,17 @@ struct MenuTop: View {
             
             Spacer()
             
-            Button(action: {}, label: {
-                Image("people")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-            }).padding(.bottom)
-            
+            NavigationLink(tag: 1, selection: $selection) {
+                ProfileView()
+            } label: {
+                Button(action: {
+                    self.selection = 1
+                }, label: {
+                    Image("people")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                }).padding(.bottom)
+            }
         }
     }
 }
@@ -196,7 +198,6 @@ struct searchBar: View {
 }
 
 struct theLoaiBtn_bookMarkBtn: View {
-    @State var showView = false
     @State private var selection: Int? = 0
     var body: some View {
         HStack(spacing:0) {
@@ -334,7 +335,6 @@ struct BookView: View {
                 }
                 .padding(.trailing)
             }
-            
         }
         
     }
@@ -358,14 +358,11 @@ struct ListBookView: View {
     }
 }
 
-
-
 struct bottomNavBar: View {
     @Binding var selectedBottomNavBarItemIndex:Int
     @State var selection:Int?
     var body: some View {
         HStack{
-          
             NavigationLink(tag: 7, selection: $selection) {
                 HomeView()
             } label: {
@@ -486,9 +483,10 @@ struct MenuView: View {
                 
                 Spacer()
                 Spacer()
+                Spacer()
+                Spacer()
             }
             .background(Color(.white))
-            .offset(x: 0 , y: 0)
             .foregroundColor(Color(#colorLiteral(red: 0.62,green: 0.62,blue: 0.62,alpha: 1)))
             
         }
@@ -534,12 +532,12 @@ struct ButtonMenuAbove: View {
     var body: some View {
         VStack(alignment: .leading) {
             NavigationLink(tag: 1, selection: $selection) {
-                HomeView()
+                ProfileView()
             } label: {
                 Button {
-                    self.selection = nil
+                    self.selection = 1
                 } label: {
-                    ButtonMenu(image:Image("home"), name: "Hồ sơ")
+                    ButtonMenu(image:Image(systemName: "person"), name: "Hồ sơ")
                 }
             }
             
@@ -577,6 +575,7 @@ struct ButtonMenuAbove: View {
 }
 
 struct ButtonMenuBelow: View {
+    @EnvironmentObject var userVm:SignInViewModel
     @State private var selection: Int? = 0
     var body: some View{
         VStack(alignment: .leading) {
@@ -600,13 +599,17 @@ struct ButtonMenuBelow: View {
                 }
             }
             
-            NavigationLink(tag: 3, selection: $selection) {
-                HomeView()
+            NavigationLink(tag: 20, selection: $selection) {
+                SignInView()
             } label: {
                 Button {
-                    self.selection = nil
+                    userVm.user = User()
+                    userVm.isLoggedIn = false
+                    userVm.removeAllLoadingListeners()
+                    self.selection = 20
+                    
                 } label: {
-                    ButtonMenu(image:Image("email"), name: "Gửi phản hồi")
+                    ButtonMenu(image:Image("close"), name: "Đăng xuất")
                 }
             }
             
