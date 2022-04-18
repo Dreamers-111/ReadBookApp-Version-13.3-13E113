@@ -66,15 +66,18 @@ struct listItems :  View {
                 .foregroundColor(Color(#colorLiteral(red: 0.62, green: 0.62, blue: 0.62, alpha: 1)))
                 .font(.system(size: 14))
             }
+            .frame(minWidth: 160)
             
-            Image(systemName: "bookmark")
-                .resizable()
-                .frame(width: 22, height: 40,alignment: .top)
-                .foregroundColor(Color(red: 212/255, green: 85/255, blue: 85/255))
-                .padding(.leading)
-                .padding(.leading)
+
+            Image(systemName: "bookmark.fill")
+                    .resizable()
+                    .frame(width: 22, height: 40,alignment: .topTrailing)
+                    .foregroundColor(Color(red: 212/255, green: 85/255, blue: 85/255))
+                    .padding(.leading)
+                    .padding(.leading)
+            }
             
-        }
+        
     }
 }
 

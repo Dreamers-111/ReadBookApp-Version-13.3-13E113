@@ -13,6 +13,7 @@ final class BookmarkViewModel: ObservableObject{
     @Published public private(set) var booksbookmark:[Book] = []
     
     func fetchBooksBookmark(books:[Book], userBookmark: [String]) -> Void {
+        self.booksbookmark = []
         for ele in books {
             if (userBookmark.contains(ele.id))
             {
